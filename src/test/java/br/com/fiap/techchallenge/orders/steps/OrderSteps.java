@@ -1,8 +1,8 @@
 package br.com.fiap.techchallenge.orders.steps;
 
 import br.com.fiap.techchallenge.orders.FastfoodOrdersApplication;
-import io.cucumber.java.en.When;
-import io.cucumber.java.en.Then;
+import io.cucumber.java.it.Quando;
+import io.cucumber.java.pt.Entao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,13 +18,13 @@ public class OrderSteps {
 
     private ResponseEntity<String> response;
 
-    @When("I do a GET request to {string}")
-    public void i_do_a_get_request_to(String endpoint) {
+    @Quando("eu faço uma requisição GET para {string}")
+    public void eu_faco_uma_requisicao_get_para(String endpoint) {
         response = restTemplate.getForEntity(endpoint, String.class);
     }
 
-    @Then("the return is {string}")
-    public void the_return_is(String message) {
+    @Entao("o retorno deve conter {string}")
+    public void o_retorno_deve_conter(String message) {
         assertThat(response.getBody()).contains(message);
     }
 }

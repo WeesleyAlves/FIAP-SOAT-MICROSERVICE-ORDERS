@@ -1,5 +1,6 @@
-Feature: Test orders route
+# language: pt
+  Funcionalidade: Testar o endpoint de pedidos
 
-  Scenario: GET request for /orders/
-    When I do a GET request to "/orders/"
-    Then the return is "Hello World"
+    Cenario: Requisicao GET para /orders/
+      Quando eu faço uma requisição GET para "/orders/"
+      Entao o retorno deve conter "Hello World"
