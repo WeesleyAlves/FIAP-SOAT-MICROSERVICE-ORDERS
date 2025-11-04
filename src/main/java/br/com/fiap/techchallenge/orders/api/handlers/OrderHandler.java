@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/")
 public class OrderHandler {
     public OrderHandler() {}
 
@@ -13,7 +13,7 @@ public class OrderHandler {
         return ResponseEntity.ok("Hello World");
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/order/{id}")
     public ResponseEntity<String> getById(@PathVariable String id) {
         return ResponseEntity.ok("{\n" +
                 "\t\"status\": 200,\n" +
@@ -85,8 +85,7 @@ public class OrderHandler {
                 "}");
     }
 
-
-    @PostMapping
+    @PostMapping("/order")
     public ResponseEntity<String> create(@RequestBody Object order) {
         return ResponseEntity.status(201).body("{\n" +
                 "\t\"status\": 201,\n" +

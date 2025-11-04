@@ -2,10 +2,10 @@
 Funcionalidade: Testar os endpoints publicos de pedidos
   São testados os endpoints de fila,
   criação de pedido e buscar pedido por ID.
-  Tanto cenários de erro quanto de sucesso.
+
 
   Cenario: Consultar fila publica de pedidos
-    Quando eu realizar um requisicao GET para "/orders/queue"
+    Quando eu realizar um requisicao GET para "/queue"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "orders-public-queue-schema.json"
 
@@ -18,7 +18,7 @@ Funcionalidade: Testar os endpoints publicos de pedidos
       | id                                   | name         | quantity | price | totalValue |
       | 4b31b7f4-b43a-4af1-a48d-69cceaa0d101 | X-Burger     | 2        | 15.90 | 31.80      |
       | 4b31b7f4-b43a-4af1-a48d-69cceaa0d102 | Refrigerante | 1        | 8.50  | 8.50       |
-    Quando eu realizar um requisicao GET para "/orders/10ca5645-26e0-4dda-bb3c-11a00009774b"
+    Quando eu realizar um requisicao GET para "/order/10ca5645-26e0-4dda-bb3c-11a00009774b"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "order-complete-schema.json"
 
@@ -41,6 +41,6 @@ Funcionalidade: Testar os endpoints publicos de pedidos
         "notes": "Com cobertura de morango"
       }
       """
-    Quando eu realizar uma requisicao POST para "/orders"
+    Quando eu realizar uma requisicao POST para "/order"
     Entao deve retornar status 201
     E deve retornar um JSON com o schema "order-complete-schema.json"
