@@ -9,6 +9,9 @@ import com.networknt.schema.ValidationMessage;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.pt.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ClassPathResource;
@@ -25,6 +28,9 @@ public class PublicOrders {
     private TestRestTemplate restTemplate;
 
     private ResponseEntity<String> resposta;
+    private String bodyJson;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
 //    @MockitoBean
 //    private OrderService orderService;
@@ -73,9 +79,45 @@ public class PublicOrders {
 //                .thenReturn(pedidoMock);
     }
 
+    @Dado("que eu possuo os seguintes dados do pedido:")
+    public void queEuPossuoOsSeguintesDadosDoPedido(String json) {
+        this.bodyJson = json;
+
+        // Configura o mock de retorno da criação
+//        Order pedidoCriado = new Order();
+//        pedidoCriado.setId(UUID.randomUUID());
+//        pedidoCriado.setOrderNumber(123);
+//        pedidoCriado.setStatus("Recebido");
+//        pedidoCriado.setCustomerId(UUID.fromString("8c6e378f-9b3c-4e97-9fbe-ffbfb659d15f"));
+//        pedidoCriado.setNotes("Com cobertura de morango");
+//        pedidoCriado.setCreatedAt(OffsetDateTime.now());
+//        pedidoCriado.setUpdatedAt(OffsetDateTime.now());
+//        pedidoCriado.setPaymentId(UUID.randomUUID());
+//        pedidoCriado.setQrData("qrcode-pix-1234567890");
+//
+//        List<Product> produtos = Arrays.asList(
+//                new Product(UUID.fromString("f809b1c5-6f70-8192-d345-6789012345f0"), "Sorvete de Chocolate", 1, 15.0, 15.0),
+//                new Product(UUID.fromString("e7f9a0b4-5e6f-7081-c234-5678901234ef"), "Cobertura de Morango", 1, 5.0, 5.0)
+//        );
+//
+//        pedidoCriado.setProducts(produtos);
+//        pedidoCriado.setPrice(produtos.stream().mapToDouble(Product::getTotalValue).sum());
+//
+//        when(orderService.createOrder(any(Order.class))).thenReturn(pedidoCriado);
+    }
+
     @Quando("eu realizar um requisicao GET para {string}")
     public void realizarRequisicaoGetPara(String endpoint) {
         resposta = restTemplate.getForEntity(endpoint, String.class);
+    }
+
+    @Quando("eu realizar uma requisicao POST para {string}")
+    public void euRealizarUmaRequisicaoPOSTPara(String path) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> request = new HttpEntity<>(bodyJson, headers);
+        resposta = restTemplate.postForEntity(path, request, String.class);
     }
 
     @Entao("deve retornar status {int}")

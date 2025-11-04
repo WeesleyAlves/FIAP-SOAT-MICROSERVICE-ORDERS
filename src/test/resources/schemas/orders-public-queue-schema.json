@@ -5,7 +5,7 @@
   "properties": {
     "status": {
       "type": "integer",
-      "enum": [200, 400, 404, 500]
+      "enum": [200]
     },
     "message": { "type": "string" },
     "data": {
