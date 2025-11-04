@@ -3,20 +3,29 @@
   "type": "object",
   "required": ["status", "message", "data"],
   "properties": {
-    "status": { "type": "integer" },
+    "status": {
+      "type": "integer",
+      "enum": [200, 400, 404, 500]
+    },
     "message": { "type": "string" },
     "data": {
       "type": "array",
       "items": {
         "type": "object",
         "required": [
-          "id", "order_number", "status", "customer_id", "notes",
+          "id", "order_number", "status", "notes",
           "price", "created_at", "updated_at", "products"
         ],
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "order_number": { "type": "integer" },
-          "status": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Aguardando Pagamento", "Recebido", "Em Preparação",
+              "Pronto", "Finalizado", "Descartado", "Cancelado"
+            ]
+          },
           "customer_id": { "type": "string", "format": "uuid" },
           "notes": { "type": "string" },
           "price": { "type": "number" },

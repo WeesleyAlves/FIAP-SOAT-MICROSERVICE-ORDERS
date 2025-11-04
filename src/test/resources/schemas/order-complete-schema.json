@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "message", "data"],
+  "properties": {
+    "status": {
+      "type": "integer",
+      "enum": [200, 400, 404, 500]
+    },
+    "message": { "type": "string" },
+    "data": {
+      "type": "object",
+      "required": [
+        "id", "order_number", "status", "notes",
+        "price", "created_at", "updated_at", "products"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "order_number": { "type": "integer" },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Aguardando Pagamento", "Recebido", "Em Preparação",
+            "Pronto", "Finalizado", "Descartado", "Cancelado"
+          ]
+        },
+        "notes": { "type": "string" },
+        "price": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "quantity", "price", "totalValue"],
+            "properties": {
+              "id": { "type": "string", "format": "uuid" },
+              "name": { "type": "string" },
+              "quantity": { "type": "integer" },
+              "price": { "type": "number" },
+              "totalValue": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
