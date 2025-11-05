@@ -14,22 +14,23 @@ public class ApiResponseDTO<T> {
     private String message;
     private T data;
 
-    public static <T> ApiResponseDTO<T> success(String message, T data) {
+    public static <T> ApiResponseDTO<T> send(Integer code, String message, T data) {
         return ApiResponseDTO.<T>builder()
-                .status(200)
-                .message(message)
-                .data(data)
-                .build();
+            .status(code)
+            .message(message)
+            .data(data)
+            .build();
     }
 
-    public static <T> ApiResponseDTO<T> success(String message) {
-        return success(message, null);
+    public static <T> ApiResponseDTO<T> send(Integer code, String message) {
+        return send(code, message, null);
     }
 
-    public static <T> ApiResponseDTO<T> error(int status, String message) {
-        return ApiResponseDTO.<T>builder()
-                .status(status)
-                .message(message)
-                .build();
+    public static <T> ApiResponseDTO<T> send(String message) {
+        return send(200, message, null);
     }
-} 
+
+    public static <T> ApiResponseDTO<T> send(Integer code) {
+        return send(code, null, null);
+    }
+}

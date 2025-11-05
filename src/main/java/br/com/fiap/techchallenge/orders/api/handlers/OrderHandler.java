@@ -27,7 +27,7 @@ public class OrderHandler {
         return ResponseEntity
             .status(201)
             .body(
-                ApiResponseDTO.success("Pedido criado com sucesso", "")
+                ApiResponseDTO.send(201,"Pedido criado com sucesso", "")
             );
     }
 }
