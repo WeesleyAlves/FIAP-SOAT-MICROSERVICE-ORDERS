@@ -1,5 +1,6 @@
 package br.com.fiap.techchallenge.orders.api.handlers;
 
+import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,11 @@ public class OrderHandler {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<String> create(@RequestBody Object order) {
-        return ResponseEntity.status(201).body("");
+    public ResponseEntity<ApiResponseDTO<Object>> createOrder(@RequestBody Object order) {
+        return ResponseEntity
+            .status(201)
+            .body(
+                ApiResponseDTO.success("Pedido criado com sucesso", "")
+            );
     }
 }
