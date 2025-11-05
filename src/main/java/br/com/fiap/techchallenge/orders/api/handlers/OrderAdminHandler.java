@@ -19,4 +19,20 @@ public class OrderAdminHandler {
                 "\t\"data\": \"\"\n" +
                 "}");
     }
+
+    @PatchMapping("/order/status")
+    public ResponseEntity<String> updateOrderStatus(@RequestBody Object order) {
+        return ResponseEntity.ok("{\n" +
+                "\t\"status\": 200,\n" +
+                "\t\"message\": \"Status do pedido atualizado com sucesso.\",\n" +
+                "\t\"data\": {\n" +
+                "\t\t\"id\": \"10ca5645-26e0-4dda-bb3c-11a00009774b\",\n" +
+                "\t\t\"order_number\": 4,\n" +
+                "\t\t\"status\": \"Em Preparação\",\n" +
+                "\t\t\"customer_id\": \"8c6e378f-9b3c-4e97-9fbe-ffbfb659d15f\",\n" +
+                "\t\t\"created_at\": \"2025-11-03T20:14:24.32921\",\n" +
+                "\t\t\"updated_at\": \"2025-11-04T20:57:55.357158\"\n" +
+                "\t}\n" +
+        "}");
+    }
 }

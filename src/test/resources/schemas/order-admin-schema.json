@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "message", "data"],
+  "properties": {
+    "status": {
+      "type": "integer",
+      "enum": [200, 201]
+    },
+    "message": { "type": "string" },
+    "data": {
+      "type": "object",
+      "required": [
+        "id", "order_number", "status",
+        "created_at", "updated_at"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "order_number": { "type": "integer" },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Aguardando Pagamento", "Recebido", "Em Preparação",
+            "Pronto", "Finalizado", "Descartado", "Cancelado"
+          ]
+        },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

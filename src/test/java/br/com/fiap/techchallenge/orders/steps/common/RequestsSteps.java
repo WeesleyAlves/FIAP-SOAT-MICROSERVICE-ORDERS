@@ -11,9 +11,7 @@ import io.cucumber.java.pt.Quando;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -44,6 +42,23 @@ public class RequestsSteps {
         context.setResponse(
             restTemplate.postForEntity(path, request, String.class)
         );
+    }
+
+    @Quando("eu realizar uma requisicao PATCH para {string}")
+    public void euRealizarUmaRequisicaoPATCHPara(String path) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> request = new HttpEntity<>(context.getBodyJson(), headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+            path,
+            HttpMethod.PATCH,
+            request,
+            String.class
+        );
+
+        context.setResponse(response);
     }
 
     @Entao("deve retornar status {int}")
