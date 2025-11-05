@@ -22,3 +22,9 @@ Funcionalidade: Testar os endpoints administrativos dos pedidos
     Quando eu realizar uma requisicao PATCH para "/admin/order/status"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "order-admin-schema.json"
+
+
+  Cenario: Listar pedidos pela zona administrativa
+    Quando eu realizar um requisicao GET para "/admin/orders"
+    Entao deve retornar status 200
+    E deve retornar um JSON com o schema "orders-admin-list-schema.json"
