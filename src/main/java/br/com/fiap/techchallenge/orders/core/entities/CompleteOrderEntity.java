@@ -77,8 +77,7 @@ public class CompleteOrderEntity {
         Integer orderNumber,
         String status,
         BigDecimal originalPrice,
-        UUID customerId,
-        String notes
+        UUID customerId
     ) {
         if (orderNumber == null || orderNumber <= 0) {
             throw new IllegalArgumentException("O número do pedido deve ser um valor positivo e não pode ser nulo.");
@@ -96,7 +95,6 @@ public class CompleteOrderEntity {
         this.status = status;
         this.originalPrice = originalPrice;
         this.customerId = customerId;
-        this.notes = notes;
     }
 
     public void setProducts(List<OrderProductItemEntity> products) {

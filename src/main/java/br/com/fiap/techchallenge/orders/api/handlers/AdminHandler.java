@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
-public class OrderAdminHandler {
+public class AdminHandler {
     @GetMapping("/")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("");

@@ -8,6 +8,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class OrderPaymentEntity {
-    private UUID paymentId;
-    private String qrCode;
+    private UUID id;
+    private String qrData;
 }
