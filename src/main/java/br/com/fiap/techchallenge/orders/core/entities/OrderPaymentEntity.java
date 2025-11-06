@@ -10,4 +10,9 @@ import java.util.UUID;
 public class OrderPaymentEntity {
     private UUID id;
     private String qrData;
+
+    public OrderPaymentEntity(UUID uuid, String qrCodeData) {
+        this.id = uuid;
+        this.qrData = qrCodeData;
+    }
 }

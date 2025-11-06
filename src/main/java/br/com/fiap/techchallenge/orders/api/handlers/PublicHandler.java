@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
 import br.com.fiap.techchallenge.orders.application.controllers.PublicController;
 import br.com.fiap.techchallenge.orders.application.dtos.in.NewOrderDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
+import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +15,13 @@ public class PublicHandler {
     private final PublicController publicController;
 
     public PublicHandler(
-            OrderDatasource orderDatasource
+            OrderDatasource orderDatasource,
+            PaymentDatasource paymentDatasource
     ) {
-        this.publicController = new PublicController( orderDatasource );
+        this.publicController = new PublicController(
+            orderDatasource,
+            paymentDatasource
+        );
     }
 
     @GetMapping("/")
