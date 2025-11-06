@@ -6,6 +6,7 @@ import br.com.fiap.techchallenge.orders.application.gateways.*;
 import br.com.fiap.techchallenge.orders.application.presenters.OrderPresenter;
 import br.com.fiap.techchallenge.orders.core.use_cases.CreateOrderUseCase;
 import br.com.fiap.techchallenge.orders.core.use_cases.OrderNumberGeneratorUseCase;
+import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
@@ -14,15 +15,18 @@ public class PublicController {
     private final OrderDatasource orderDatasource;
     private final PaymentDatasource paymentDatasource;
     private final ProductsDatasource productsDatasource;
+    private final InventoryDatasource inventoryDatasource;
 
     public PublicController(
         OrderDatasource orderDatasource,
         PaymentDatasource paymentDatasource,
-        ProductsDatasource productsDatasource
+        ProductsDatasource productsDatasource,
+        InventoryDatasource inventoryDatasource
     ){
         this.orderDatasource = orderDatasource;
         this.paymentDatasource = paymentDatasource;
         this.productsDatasource = productsDatasource;
+        this.inventoryDatasource = inventoryDatasource;
     }
 
     public CompleteOrderDTO createOrder(NewOrderDTO dto) {
@@ -31,6 +35,7 @@ public class PublicController {
         var paymentGateway = new PaymentGateway( paymentDatasource );
         var productGateway = new ProductGateway( productsDatasource );
         var orderProductsGateway = new OrderProductsGateway( orderDatasource );
+        var inventoryGateway = new InventoryGateway( inventoryDatasource );
 
         var orderNumberUseCase = new OrderNumberGeneratorUseCase( orderNumberGateway );
         var createOrderUseCase = new CreateOrderUseCase( orderGateway, productGateway, orderProductsGateway );
@@ -41,6 +46,8 @@ public class PublicController {
         var createdPayment = paymentGateway.createPayment();
 
         persistedOrder.setPayment(createdPayment);
+
+        inventoryGateway.updateInventory();
 
         return OrderPresenter.createCompleteOrderDTO(persistedOrder);
     }

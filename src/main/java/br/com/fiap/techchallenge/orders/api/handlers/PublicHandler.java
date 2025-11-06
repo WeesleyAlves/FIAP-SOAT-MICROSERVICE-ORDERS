@@ -3,6 +3,7 @@ package br.com.fiap.techchallenge.orders.api.handlers;
 import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
 import br.com.fiap.techchallenge.orders.application.controllers.PublicController;
 import br.com.fiap.techchallenge.orders.application.dtos.in.NewOrderDTO;
+import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
@@ -18,12 +19,14 @@ public class PublicHandler {
     public PublicHandler(
             OrderDatasource orderDatasource,
             PaymentDatasource paymentDatasource,
-            ProductsDatasource productsDatasource
+            ProductsDatasource productsDatasource,
+            InventoryDatasource inventoryDatasource
     ) {
         this.publicController = new PublicController(
             orderDatasource,
             paymentDatasource,
-            productsDatasource
+            productsDatasource,
+            inventoryDatasource
         );
     }
 
