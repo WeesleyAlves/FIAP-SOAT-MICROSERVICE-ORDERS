@@ -73,9 +73,8 @@ public class CreateOrderUseCase {
         );
 
         orderEntity.setNotes(dto.notes());
-//
-//        orderEntity = orderGateway.save(orderEntity);
-//
+        orderEntity = orderGateway.save(orderEntity);
+
 //        List<OrderProductsEntity> orderProductsToPersist = new ArrayList<>();
 //
 //        for ( var productItem: listItensOrder ){
