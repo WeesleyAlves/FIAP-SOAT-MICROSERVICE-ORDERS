@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import static br.com.fiap.techchallenge.orders.utils.constants.OrderConstants.ORDER_NOT_FOUND;
 import static br.com.fiap.techchallenge.orders.utils.constants.OrderConstants.ORDER_SEQUENCE_NOT_INITIALIZED;
 
 @Service
@@ -47,7 +48,7 @@ public class OrderAdapter implements OrderDatasource {
     public CompleteOrderDTO findOrderByID(UUID orderId) {
         var result = ordersRepository.findById(orderId)
             .orElseThrow(
-                () -> new OrderNotFoundException("Pedido não encontrado para o id: " + orderId)
+                () -> new OrderNotFoundException( String.format(ORDER_NOT_FOUND, orderId) )
             );
 
         return new CompleteOrderDTO(
