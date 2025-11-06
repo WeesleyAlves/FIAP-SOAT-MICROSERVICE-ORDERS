@@ -21,6 +21,6 @@ public interface OrderDatasource {
 //    Long countOrderNumber();
 
 
-//    List<OrderProductOutDTO> findOrderProductsByOrderId(UUID orderId);
-//    List<OrderProductOutDTO> saveAllOrderProducts(List<OrderProductOutDTO> dto);
+    List<OrderProductOutDTO> findOrderProductsByOrderId(UUID orderId);
+    List<OrderProductOutDTO> saveAllOrderProducts(List<OrderProductOutDTO> dto);
 }

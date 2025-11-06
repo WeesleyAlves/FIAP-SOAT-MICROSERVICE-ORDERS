@@ -10,7 +10,10 @@ import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductOutDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderEntityJPA;
 import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderNumberEntityJPA;
+import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderProductIdJPA;
+import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderProductsEntityJPA;
 import br.com.fiap.techchallenge.orders.infrastructure.repositories.OrderNumberSequenceRepository;
+import br.com.fiap.techchallenge.orders.infrastructure.repositories.OrderProductsRepository;
 import br.com.fiap.techchallenge.orders.infrastructure.repositories.OrdersRepository;
 import br.com.fiap.techchallenge.orders.utils.constants.OrderStatus;
 import jakarta.annotation.PostConstruct;
@@ -27,17 +30,17 @@ import static br.com.fiap.techchallenge.orders.utils.constants.OrderConstants.OR
 public class OrderAdapter implements OrderDatasource {
     private final OrdersRepository ordersRepository;
     private final OrderNumberSequenceRepository sequenceRepository;
-//    private final OrderProductsRepository orderProductsRepository;
+    private final OrderProductsRepository orderProductsRepository;
 
     @Autowired
     public OrderAdapter(
         OrdersRepository ordersRepository,
-        OrderNumberSequenceRepository sequenceRepository
-//        OrderProductsRepository orderProductsRepository,
+        OrderNumberSequenceRepository sequenceRepository,
+        OrderProductsRepository orderProductsRepository
     ) {
         this.ordersRepository = ordersRepository;
         this.sequenceRepository = sequenceRepository;
-//        this.orderProductsRepository = orderProductsRepository;
+        this.orderProductsRepository = orderProductsRepository;
     }
 
     @Override
@@ -130,44 +133,44 @@ public class OrderAdapter implements OrderDatasource {
         );
     }
 
-//    @Override
-//    public List<OrderProductOutDTO> findOrderProductsByOrderId(UUID orderId) {
-//        var result = orderProductsRepository.findAllById_OrderId(orderId);
-//
-//        return result.stream()
-//            .map( orderProduct ->
-//                new OrderProductOutDTO(
-//                    orderProduct.getId().getOrderId(),
-//                    orderProduct.getId().getProductId(),
-//                    orderProduct.getQuantity()
-//                )
-//            ).toList();
-//    }
+    @Override
+    public List<OrderProductOutDTO> findOrderProductsByOrderId(UUID orderId) {
+        var result = orderProductsRepository.findAllById_OrderId(orderId);
 
-//    @Override
-//    public List<OrderProductOutDTO> saveAllOrderProducts(List<OrderProductOutDTO> dto) {
-//        List<OrderProductsEntityJPA> toPersiste = dto.stream()
-//            .map( item ->
-//                new OrderProductsEntityJPA(
-//                    new OrderProductIdJPA(
-//                        item.orderId(),
-//                        item.productId()
-//                    ),
-//                    item.quantity()
-//                )
-//            ).toList();
-//
-//        var result = orderProductsRepository.saveAll(toPersiste);
-//
-//        return result.stream()
-//            .map(item ->
-//                new OrderProductOutDTO(
-//                    item.getId().getOrderId(),
-//                    item.getId().getProductId(),
-//                    item.getQuantity()
-//                )
-//            ).toList();
-//    }
+        return result.stream()
+            .map( orderProduct ->
+                new OrderProductOutDTO(
+                    orderProduct.getId().getOrderId(),
+                    orderProduct.getId().getProductId(),
+                    orderProduct.getQuantity()
+                )
+            ).toList();
+    }
+
+    @Override
+    public List<OrderProductOutDTO> saveAllOrderProducts(List<OrderProductOutDTO> dto) {
+        List<OrderProductsEntityJPA> toPersiste = dto.stream()
+            .map( item ->
+                new OrderProductsEntityJPA(
+                    new OrderProductIdJPA(
+                        item.orderId(),
+                        item.productId()
+                    ),
+                    item.quantity()
+                )
+            ).toList();
+
+        var result = orderProductsRepository.saveAll(toPersiste);
+
+        return result.stream()
+            .map(item ->
+                new OrderProductOutDTO(
+                    item.getId().getOrderId(),
+                    item.getId().getProductId(),
+                    item.getQuantity()
+                )
+            ).toList();
+    }
 
     @Override
     @Transactional

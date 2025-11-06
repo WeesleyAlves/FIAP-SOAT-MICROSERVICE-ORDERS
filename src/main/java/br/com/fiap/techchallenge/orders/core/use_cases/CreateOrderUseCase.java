@@ -1,25 +1,35 @@
 package br.com.fiap.techchallenge.orders.core.use_cases;
 
+import br.com.fiap.techchallenge.orders.api.exceptions.ProductNotFoundException;
 import br.com.fiap.techchallenge.orders.application.dtos.in.NewOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.in.OrderProductInDTO;
 import br.com.fiap.techchallenge.orders.application.gateways.OrderGateway;
+import br.com.fiap.techchallenge.orders.application.gateways.OrderProductsGateway;
+import br.com.fiap.techchallenge.orders.application.gateways.ProductGateway;
 import br.com.fiap.techchallenge.orders.core.entities.CompleteOrderEntity;
+import br.com.fiap.techchallenge.orders.core.entities.OrderProductItemEntity;
+import br.com.fiap.techchallenge.orders.core.entities.OrderProductsEntity;
 import br.com.fiap.techchallenge.orders.utils.constants.OrderStatus;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
 public class CreateOrderUseCase {
     private final OrderGateway orderGateway;
-//    private final ProductGateway productGateway;
-//    private final OrderProductsGateway orderProductsGateway;
-//
+    private final ProductGateway productGateway;
+    private final OrderProductsGateway orderProductsGateway;
+
     public CreateOrderUseCase(
-            OrderGateway orderGateway
+            OrderGateway orderGateway,
+            ProductGateway productGateway,
+            OrderProductsGateway orderProductsGateway
     ) {
         this.orderGateway = orderGateway;
+        this.productGateway = productGateway;
+        this.orderProductsGateway = orderProductsGateway;
     }
 
     public CompleteOrderEntity run(NewOrderDTO dto, Integer orderNumber) {
@@ -30,65 +40,66 @@ public class CreateOrderUseCase {
         List<UUID> productsIds = dto.products().stream()
             .map(OrderProductInDTO::id)
             .toList();
-//
-//        List<ProductEntity> productEntities = productGateway.getAllByIds(productsIds);
-//
-//        List<OrderProductItemEntity> listItensOrder = new ArrayList<>();
-//
-//        BigDecimal totalPrice = BigDecimal.ZERO;
-//
-//        for (var orderProduct : dto.products()) {
-//            ProductEntity product = productEntities.stream()
-//                    .filter( p -> p.getId().equals( orderProduct.id() ) )
-//                    .findFirst()
-//                    .orElseThrow(
-//                            () -> new ProductNotFoundException("Produto não encontrado para o ID: " + orderProduct.id())
-//                    );
-//
-//            if(orderProduct.quantity() == null){
-//                throw new IllegalArgumentException("A quantidade de produtos não pode estar vazia.");
-//            }
-//
-//            var totalPriceProduct = product.getPrice()
-//                    .multiply(
-//                            new BigDecimal( orderProduct.quantity() )
-//                    );
-//
-//            totalPrice = totalPrice.add(totalPriceProduct);
-//
-//            listItensOrder.add( new OrderProductItemEntity(
-//                    product.getId(),
-//                    product.getName(),
-//                    orderProduct.quantity(),
-//                    product.getPrice(),
-//                    totalPriceProduct
-//            ) );
-//        }
-//
+
+
+        List<OrderProductItemEntity> productEntitiesResult = productGateway.getAllByIds(productsIds);
+
+        List<OrderProductItemEntity> productsEntitiesCompleteList = new ArrayList<>();
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        for (var orderProduct : dto.products() ) {
+            var productEntity = productEntitiesResult.stream()
+                .filter( p -> p.getId().equals( orderProduct.id() ) )
+                .findFirst()
+                .orElseThrow(
+                        () -> new ProductNotFoundException("Produto não encontrado para o ID: " + orderProduct.id())
+                );
+
+            if(orderProduct.quantity() == null){
+                throw new IllegalArgumentException("A quantidade de produtos não pode estar vazia.");
+            }
+
+            var totalPriceProduct = productEntity
+                .getPrice()
+                .multiply(
+                    new BigDecimal( orderProduct.quantity() )
+                );
+
+            totalPrice = totalPrice.add(totalPriceProduct);
+
+            productEntity.setQuantity( orderProduct.quantity() );
+            productEntity.setTotalValue(totalPriceProduct);
+
+            productsEntitiesCompleteList.add( productEntity );
+        }
+
         CompleteOrderEntity orderEntity = new CompleteOrderEntity(
-                orderNumber,
-                OrderStatus.AWAITING_PAYMENT.getDescription(),
-                BigDecimal.valueOf(Math.random()),
-                dto.customer_id()
+            orderNumber,
+            OrderStatus.AWAITING_PAYMENT.getDescription(),
+            totalPrice,
+            dto.customer_id()
         );
 
         orderEntity.setNotes(dto.notes());
         orderEntity = orderGateway.save(orderEntity);
 
-//        List<OrderProductsEntity> orderProductsToPersist = new ArrayList<>();
-//
-//        for ( var productItem: listItensOrder ){
-//            orderProductsToPersist.add( new OrderProductsEntity(
-//                    orderEntity.getId(),
-//                    productItem.getId(),
-//                    productItem.getQuantity()
-//            ));
-//        }
-//
-//        orderProductsGateway.saveAll(orderProductsToPersist);
-//
-//        orderEntity.setProducts(listItensOrder);
-//
+        List<OrderProductsEntity> orderProductsToPersist = new ArrayList<>();
+
+        for ( var productItem: productsEntitiesCompleteList ){
+            orderProductsToPersist.add(
+                new OrderProductsEntity(
+                    orderEntity.getId(),
+                    productItem.getId(),
+                    productItem.getQuantity()
+                )
+            );
+        }
+
+        orderProductsGateway.saveAll(orderProductsToPersist);
+
+        orderEntity.setProducts(productsEntitiesCompleteList);
+
         return orderEntity;
     }
 }

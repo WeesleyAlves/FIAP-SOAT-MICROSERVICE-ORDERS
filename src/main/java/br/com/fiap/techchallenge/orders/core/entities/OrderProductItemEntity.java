@@ -8,17 +8,16 @@ import java.util.UUID;
 @Getter
 public class OrderProductItemEntity {
     private final String name;
-    private final int quantity;
     private final BigDecimal price;
-    private final BigDecimal totalValue;
     private final UUID id;
+
+    private int quantity;
+    private BigDecimal totalValue;
 
     public OrderProductItemEntity(
         UUID id,
         String name,
-        int quantity,
-        BigDecimal price,
-        BigDecimal totalValue
+        BigDecimal price
     ) {
         if (id == null) {
             throw new IllegalArgumentException("O ID do produto não pode ser nulo.");
@@ -26,10 +25,6 @@ public class OrderProductItemEntity {
 
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("O nome do produto não pode ser nulo ou vazio.");
-        }
-
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("A quantidade do produto deve ser maior que zero.");
         }
 
         if (price == null) {
@@ -40,6 +35,20 @@ public class OrderProductItemEntity {
             throw new IllegalArgumentException("O preço unitário do produto deve ser maior que zero.");
         }
 
+        this.name = name;
+        this.price = price;
+        this.id = id;
+    }
+
+    public void setQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("A quantidade do produto deve ser maior que zero.");
+        }
+
+        this.quantity = quantity;
+    }
+
+    public void setTotalValue(BigDecimal totalValue){
         if (totalValue == null) {
             throw new IllegalArgumentException("O valor total do produto não pode ser nulo.");
         }
@@ -48,10 +57,6 @@ public class OrderProductItemEntity {
             throw new IllegalArgumentException("O valor total do produto não pode ser zero.");
         }
 
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
         this.totalValue = totalValue;
-        this.id = id;
     }
 }
