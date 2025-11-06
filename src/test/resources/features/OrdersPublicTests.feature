@@ -43,4 +43,4 @@ Funcionalidade: Testar os endpoints publicos de pedidos
       """
     Quando eu realizar uma requisicao POST para "/order"
     Entao deve retornar status 201
-    E deve retornar um JSON com o schema "order-complete-schema.json"
+    E deve retornar um JSON com o schema "order-created-schema.json"
