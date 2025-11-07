@@ -35,11 +35,6 @@ public class PublicHandler {
         );
     }
 
-    @GetMapping("/")
-    public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("");
-    }
-
     @GetMapping("/order/{id}")
     public ResponseEntity<ApiResponseDTO<CompleteOrderDTO>> getById(@PathVariable UUID id) {
         var response = publicController.getOrderById(id);

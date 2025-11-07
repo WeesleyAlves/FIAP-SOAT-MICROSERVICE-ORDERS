@@ -6,11 +6,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin")
 public class AdminHandler {
-    @GetMapping("/")
-    public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("");
-    }
-
     @PostMapping("/reset-queue-number")
     public ResponseEntity<String> resetQueueNumber() {
         return ResponseEntity.ok("");
