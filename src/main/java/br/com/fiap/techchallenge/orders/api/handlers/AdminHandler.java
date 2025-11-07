@@ -1,14 +1,25 @@
 package br.com.fiap.techchallenge.orders.api.handlers;
 
+import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
+import br.com.fiap.techchallenge.orders.application.controllers.AdminController;
+import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminHandler {
+    private final AdminController adminController;
+
+    public AdminHandler(OrderDatasource orderDatasource) {
+        this.adminController = new AdminController(orderDatasource);
+    }
+
     @PostMapping("/reset-queue-number")
-    public ResponseEntity<String> resetQueueNumber() {
-        return ResponseEntity.ok("");
+    public ResponseEntity<ApiResponseDTO<String>> resetQueueNumber() {
+        adminController.resetOrderNumberSequence();
+
+        return ResponseEntity.ok( ApiResponseDTO.send(200, "Contador reiniciado com sucesso. O próximo pedido começará em 1.") );
     }
 
     @PatchMapping("/order/status")
