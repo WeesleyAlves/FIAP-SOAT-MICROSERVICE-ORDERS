@@ -2,9 +2,12 @@ package br.com.fiap.techchallenge.orders.api.handlers;
 
 import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
 import br.com.fiap.techchallenge.orders.application.controllers.AdminController;
+import br.com.fiap.techchallenge.orders.application.dtos.out.QueueOrderDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -19,7 +22,11 @@ public class AdminHandler {
     public ResponseEntity<ApiResponseDTO<String>> resetQueueNumber() {
         adminController.resetOrderNumberSequence();
 
-        return ResponseEntity.ok( ApiResponseDTO.send(200, "Contador reiniciado com sucesso. O próximo pedido começará em 1.") );
+        return ResponseEntity
+            .status(200)
+            .body(
+                ApiResponseDTO.send(200, "Contador reiniciado com sucesso. O próximo pedido começará em 1.")
+            );
     }
 
     @PatchMapping("/order/status")
@@ -28,7 +35,13 @@ public class AdminHandler {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<String> getAdminOrdersList() {
-        return ResponseEntity.ok("");
+    public ResponseEntity<ApiResponseDTO<List<QueueOrderDTO>>> getAdminOrdersList() {
+        var result = adminController.getAllOrders();
+
+        return ResponseEntity
+            .status(200)
+            .body(
+                ApiResponseDTO.send(200, result.size()+" itens encontrados", result)
+            );
     }
 }
