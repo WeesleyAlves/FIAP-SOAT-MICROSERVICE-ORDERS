@@ -103,15 +103,14 @@ public class OrderAdapter implements OrderDatasource {
 
     @Override
     public CompleteOrderDTO updateOrder(CompleteOrderDTO dto) {
-       var result =  ordersRepository.save( new OrderEntityJPA(
-           dto.id(),
-           dto.order_number(),
-           OrderStatus.getByDescription(dto.status()),
-           dto.price(),
-           dto.customer_id(),
-           dto.notes(),
-           dto.created_at()
-       ) );
+        OrderEntityJPA order = ordersRepository.findById(dto.id())
+            .orElseThrow(
+                () -> new OrderNotFoundException( String.format(ORDER_NOT_FOUND, dto.id()) )
+            );
+
+        order.setStatus( OrderStatus.getByDescription(dto.status()) );
+
+        var result = ordersRepository.save(order);
 
         return createCompleteOrderDTOFromJPA(result);
     }
@@ -158,13 +157,6 @@ public class OrderAdapter implements OrderDatasource {
         }
     }
 
-//    @Override
-//    @Transactional
-//    public Long countOrderNumber() {
-//        return sequenceRepository.count();
-//    }
-
-
     private List<CompleteOrderDTO> mountCompleteOrdersList(List<OrderEntityJPA> orders) {
         return orders.stream()
             .map( this::createCompleteOrderDTOFromJPA )
@@ -172,7 +164,6 @@ public class OrderAdapter implements OrderDatasource {
     }
 
     private CompleteOrderDTO createCompleteOrderDTOFromJPA(OrderEntityJPA jpaEntity) {
-
         List<OrderProductItemOutDTO> productItems = jpaEntity.getProducts().stream()
             .map(productJPA ->
                 new OrderProductItemOutDTO(

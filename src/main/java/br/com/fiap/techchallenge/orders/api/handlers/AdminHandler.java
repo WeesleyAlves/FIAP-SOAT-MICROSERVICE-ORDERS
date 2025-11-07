@@ -2,6 +2,8 @@ package br.com.fiap.techchallenge.orders.api.handlers;
 
 import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
 import br.com.fiap.techchallenge.orders.application.controllers.AdminController;
+import br.com.fiap.techchallenge.orders.application.dtos.in.PathOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.QueueOrderDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +32,14 @@ public class AdminHandler {
     }
 
     @PatchMapping("/order/status")
-    public ResponseEntity<String> updateOrderStatus(@RequestBody Object order) {
-        return ResponseEntity.ok("");
+    public ResponseEntity<ApiResponseDTO<CompleteOrderDTO>> updateOrderStatus(@RequestBody PathOrderDTO dto) {
+        var result = adminController.updateStatus( dto );
+
+        return ResponseEntity
+            .status(200)
+            .body(
+                ApiResponseDTO.send(200, "Pedido atualizado com sucesso.", result)
+            );
     }
 
     @GetMapping("/orders")
