@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -40,8 +41,14 @@ public class PublicHandler {
     }
 
     @GetMapping("/order/{id}")
-    public ResponseEntity<String> getById(@PathVariable String id) {
-        return ResponseEntity.ok("");
+    public ResponseEntity<ApiResponseDTO<CompleteOrderDTO>> getById(@PathVariable UUID id) {
+        var response = publicController.getOrderById(id);
+
+        return ResponseEntity
+            .status(200)
+            .body(
+                ApiResponseDTO.send(200, "Pedido encontrado com sucesso", response)
+            );
     }
 
     @GetMapping("/queue")
@@ -51,7 +58,7 @@ public class PublicHandler {
         return ResponseEntity
             .status(200)
             .body(
-                    ApiResponseDTO.send(200, response.size()+" itens encontrados", response)
+                ApiResponseDTO.send(200, response.size()+" itens encontrados", response)
             );
     }
 

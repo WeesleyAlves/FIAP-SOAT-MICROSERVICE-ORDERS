@@ -7,6 +7,7 @@ import br.com.fiap.techchallenge.orders.application.gateways.*;
 import br.com.fiap.techchallenge.orders.application.presenters.OrderPresenter;
 import br.com.fiap.techchallenge.orders.core.entities.CompleteOrderEntity;
 import br.com.fiap.techchallenge.orders.core.use_cases.CreateOrderUseCase;
+import br.com.fiap.techchallenge.orders.core.use_cases.GetCompleteOrderByIdUseCase;
 import br.com.fiap.techchallenge.orders.core.use_cases.GetPublicOrdersUseCase;
 import br.com.fiap.techchallenge.orders.core.use_cases.OrderNumberGeneratorUseCase;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryDatasource;
@@ -15,6 +16,7 @@ import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDataso
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class PublicController {
@@ -65,5 +67,21 @@ public class PublicController {
         List<CompleteOrderEntity> ordersList = getPublicOrdersUseCase.run();
 
         return OrderPresenter.createQueueOrderDTO(ordersList);
+    }
+
+    public CompleteOrderDTO getOrderById(UUID orderId) {
+        OrderGateway orderGateway = new OrderGateway(orderDatasource);
+        PaymentGateway paymentGateway = new PaymentGateway( paymentDatasource );
+
+        var getOrderUseCase = new GetCompleteOrderByIdUseCase( orderGateway );
+//      var getPaymentByOrderIdUseCase = new GetPaymentByOrderIdUseCase(paymentGateway);
+
+        var orderEntity = getOrderUseCase.run(orderId);
+
+//        var paymentEntity = getPaymentByOrderIdUseCase.run(orderId);
+//
+//        paymentEntity.ifPresent(orderEntity::setPayment);
+
+        return OrderPresenter.createCompleteOrderDTO(orderEntity);
     }
 }
