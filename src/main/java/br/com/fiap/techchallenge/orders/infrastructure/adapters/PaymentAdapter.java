@@ -16,4 +16,12 @@ public class PaymentAdapter implements PaymentDatasource {
             "qr_code_data"
         );
     }
+
+    @Override
+    public PaymentInDTO getPaymentByOrderId(UUID orderId) {
+        return new PaymentInDTO(
+            UUID.randomUUID(),
+            "qr_code_"+orderId.toString()
+        );
+    }
 }

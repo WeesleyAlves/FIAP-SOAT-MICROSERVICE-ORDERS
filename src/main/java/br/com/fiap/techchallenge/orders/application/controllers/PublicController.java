@@ -74,13 +74,13 @@ public class PublicController {
         PaymentGateway paymentGateway = new PaymentGateway( paymentDatasource );
 
         var getOrderUseCase = new GetCompleteOrderByIdUseCase( orderGateway );
-//      var getPaymentByOrderIdUseCase = new GetPaymentByOrderIdUseCase(paymentGateway);
+
 
         var orderEntity = getOrderUseCase.run(orderId);
 
-//        var paymentEntity = getPaymentByOrderIdUseCase.run(orderId);
-//
-//        paymentEntity.ifPresent(orderEntity::setPayment);
+        var paymentEntity = paymentGateway.getByOrderID(orderId);
+
+        paymentEntity.ifPresent(orderEntity::setPayment);
 
         return OrderPresenter.createCompleteOrderDTO(orderEntity);
     }
