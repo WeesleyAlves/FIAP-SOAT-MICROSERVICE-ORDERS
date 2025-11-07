@@ -4,11 +4,9 @@ import br.com.fiap.techchallenge.orders.api.exceptions.ProductNotFoundException;
 import br.com.fiap.techchallenge.orders.application.dtos.in.NewOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.in.OrderProductInDTO;
 import br.com.fiap.techchallenge.orders.application.gateways.OrderGateway;
-import br.com.fiap.techchallenge.orders.application.gateways.OrderProductsGateway;
 import br.com.fiap.techchallenge.orders.application.gateways.ProductGateway;
 import br.com.fiap.techchallenge.orders.core.entities.CompleteOrderEntity;
 import br.com.fiap.techchallenge.orders.core.entities.OrderProductItemEntity;
-import br.com.fiap.techchallenge.orders.core.entities.OrderProductsEntity;
 import br.com.fiap.techchallenge.orders.utils.constants.OrderStatus;
 
 import java.math.BigDecimal;
@@ -20,16 +18,13 @@ import java.util.UUID;
 public class CreateOrderUseCase {
     private final OrderGateway orderGateway;
     private final ProductGateway productGateway;
-    private final OrderProductsGateway orderProductsGateway;
 
     public CreateOrderUseCase(
             OrderGateway orderGateway,
-            ProductGateway productGateway,
-            OrderProductsGateway orderProductsGateway
+            ProductGateway productGateway
     ) {
         this.orderGateway = orderGateway;
         this.productGateway = productGateway;
-        this.orderProductsGateway = orderProductsGateway;
     }
 
     public CompleteOrderEntity run(NewOrderDTO dto, Integer orderNumber) {
@@ -69,7 +64,7 @@ public class CreateOrderUseCase {
             totalPrice = totalPrice.add(totalPriceProduct);
 
             productEntity.setQuantity( orderProduct.quantity() );
-            productEntity.setTotalValue(totalPriceProduct);
+            productEntity.setTotalValue( totalPriceProduct );
 
             productsEntitiesCompleteList.add( productEntity );
         }
@@ -82,23 +77,11 @@ public class CreateOrderUseCase {
         );
 
         orderEntity.setNotes(dto.notes());
-        orderEntity = orderGateway.save(orderEntity);
-
-        List<OrderProductsEntity> orderProductsToPersist = new ArrayList<>();
-
-        for ( var productItem: productsEntitiesCompleteList ){
-            orderProductsToPersist.add(
-                new OrderProductsEntity(
-                    orderEntity.getId(),
-                    productItem.getId(),
-                    productItem.getQuantity()
-                )
-            );
-        }
-
-        orderProductsGateway.saveAll(orderProductsToPersist);
 
         orderEntity.setProducts(productsEntitiesCompleteList);
+
+        orderEntity = orderGateway.save(orderEntity);
+
 
         return orderEntity;
     }

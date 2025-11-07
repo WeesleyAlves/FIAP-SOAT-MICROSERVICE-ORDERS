@@ -2,7 +2,9 @@ package br.com.fiap.techchallenge.orders.application.gateways;
 
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CreateOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
 import br.com.fiap.techchallenge.orders.core.entities.CompleteOrderEntity;
+import br.com.fiap.techchallenge.orders.core.entities.OrderProductItemEntity;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.utils.constants.OrderStatus;
 
@@ -39,6 +41,18 @@ public class OrderGateway {
     }
 
     public CompleteOrderEntity save(CompleteOrderEntity order){
+        List<OrderProductItemOutDTO> products = order.getProducts()
+            .stream()
+            .map( p -> new OrderProductItemOutDTO(
+                    p.getId(),
+                    p.getName(),
+                    p.getPrice(),
+                    p.getQuantity(),
+                    p.getTotalValue()
+                )
+            )
+            .toList();
+
         return createOrderEntity(
             datasource.saveOrder(
                 new CreateOrderDTO(
@@ -46,7 +60,8 @@ public class OrderGateway {
                     order.getNotes(),
                     order.getOrderNumber(),
                     order.getOriginalPrice(),
-                    order.getStatus()
+                    order.getStatus(),
+                    products
                 )
             )
         );
@@ -84,6 +99,25 @@ public class OrderGateway {
 
         orderEntity.setCustomerId(dto.customer_id());
         orderEntity.setNotes(dto.notes());
+
+        if( dto.products().isPresent() ){
+            List<OrderProductItemEntity> products = dto.products().get().stream().map(
+                p -> {
+                    var entity = new OrderProductItemEntity(
+                        p.id(),
+                        p.name(),
+                        p.price()
+                    );
+
+                    entity.setQuantity(p.quantity());
+                    entity.setTotalValue(p.totalValue());
+
+                    return entity;
+                }
+            ).toList();
+
+            orderEntity.setProducts( products );
+        }
 
         return orderEntity;
     }

@@ -3,7 +3,6 @@ package br.com.fiap.techchallenge.orders.infrastructure.datasources;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CreateOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
-import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductOutDTO;
 import br.com.fiap.techchallenge.orders.utils.constants.OrderStatus;
 
 import java.util.List;
@@ -19,8 +18,4 @@ public interface OrderDatasource {
     OrderNumberDTO saveOrderNumber(OrderNumberDTO dto);
     OrderNumberDTO findTopOrderNumber();
 //    Long countOrderNumber();
-
-
-    List<OrderProductOutDTO> findOrderProductsByOrderId(UUID orderId);
-    List<OrderProductOutDTO> saveAllOrderProducts(List<OrderProductOutDTO> dto);
 }

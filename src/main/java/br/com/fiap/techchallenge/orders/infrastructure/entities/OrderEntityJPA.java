@@ -11,6 +11,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "orders")
@@ -43,6 +45,9 @@ public class OrderEntityJPA {
     @JsonIgnore
     private String notes;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderProductsEntityJPA> products = new ArrayList<>();
+
     public OrderEntityJPA(UUID customerId, String notes, OrderStatus status, Integer orderNumber, BigDecimal originalPrice) {
         this.customerId = customerId;
         this.notes = notes;
@@ -59,5 +64,10 @@ public class OrderEntityJPA {
         this.customerId = customerId;
         this.notes = notes;
         this.createdAt = createdAt;
+    }
+
+    public void addProduct(OrderProductsEntityJPA product) {
+        products.add(product);
+        product.setOrder(this);
     }
 }

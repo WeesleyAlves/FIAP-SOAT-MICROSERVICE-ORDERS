@@ -11,6 +11,7 @@ import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasour
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
 
+
 public class PublicController {
     private final OrderDatasource orderDatasource;
     private final PaymentDatasource paymentDatasource;
@@ -34,11 +35,10 @@ public class PublicController {
         var orderNumberGateway = new OrderNumberGateway( orderDatasource );
         var paymentGateway = new PaymentGateway( paymentDatasource );
         var productGateway = new ProductGateway( productsDatasource );
-        var orderProductsGateway = new OrderProductsGateway( orderDatasource );
         var inventoryGateway = new InventoryGateway( inventoryDatasource );
 
         var orderNumberUseCase = new OrderNumberGeneratorUseCase( orderNumberGateway );
-        var createOrderUseCase = new CreateOrderUseCase( orderGateway, productGateway, orderProductsGateway );
+        var createOrderUseCase = new CreateOrderUseCase( orderGateway, productGateway );
 
         var orderNumber = orderNumberUseCase.getNextOrderNumber();
 

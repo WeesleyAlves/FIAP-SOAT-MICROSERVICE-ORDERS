@@ -6,14 +6,13 @@ import br.com.fiap.techchallenge.orders.api.exceptions.OrderNumberSequenceNotIni
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CreateOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
-import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductOutDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderEntityJPA;
 import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderNumberEntityJPA;
 import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderProductIdJPA;
 import br.com.fiap.techchallenge.orders.infrastructure.entities.OrderProductsEntityJPA;
 import br.com.fiap.techchallenge.orders.infrastructure.repositories.OrderNumberSequenceRepository;
-import br.com.fiap.techchallenge.orders.infrastructure.repositories.OrderProductsRepository;
 import br.com.fiap.techchallenge.orders.infrastructure.repositories.OrdersRepository;
 import br.com.fiap.techchallenge.orders.utils.constants.OrderStatus;
 import jakarta.annotation.PostConstruct;
@@ -21,7 +20,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static br.com.fiap.techchallenge.orders.utils.constants.OrderConstants.ORDER_NOT_FOUND;
@@ -31,17 +32,14 @@ import static br.com.fiap.techchallenge.orders.utils.constants.OrderConstants.OR
 public class OrderAdapter implements OrderDatasource {
     private final OrdersRepository ordersRepository;
     private final OrderNumberSequenceRepository sequenceRepository;
-    private final OrderProductsRepository orderProductsRepository;
 
     @Autowired
     public OrderAdapter(
         OrdersRepository ordersRepository,
-        OrderNumberSequenceRepository sequenceRepository,
-        OrderProductsRepository orderProductsRepository
+        OrderNumberSequenceRepository sequenceRepository
     ) {
         this.ordersRepository = ordersRepository;
         this.sequenceRepository = sequenceRepository;
-        this.orderProductsRepository = orderProductsRepository;
     }
 
     @Override
@@ -51,19 +49,7 @@ public class OrderAdapter implements OrderDatasource {
                 () -> new OrderNotFoundException( String.format(ORDER_NOT_FOUND, orderId) )
             );
 
-        return new CompleteOrderDTO(
-            result.getId(),
-            result.getOrderNumber(),
-            result.getStatus().getDescription(),
-            result.getCustomerId(),
-            result.getNotes(),
-            result.getOriginalPrice(),
-            result.getCreatedAt(),
-            result.getUpdatedAt(),
-            null,
-            null,
-            null
-        );
+        return createCompleteOrderDTOFromJPA(result);
     }
 
     @Override
@@ -82,29 +68,37 @@ public class OrderAdapter implements OrderDatasource {
 
     @Override
     public CompleteOrderDTO saveOrder(CreateOrderDTO dto) {
-        var result = ordersRepository.save(
-            new OrderEntityJPA(
-                dto.customerId(),
-                dto.notes(),
-                OrderStatus.getByDescription(dto.status()),
-                dto.orderNumber(),
-                dto.price()
-            )
+        OrderEntityJPA orderJPA = new OrderEntityJPA(
+            dto.customerId(),
+            dto.notes(),
+            OrderStatus.getByDescription(dto.status()),
+            dto.orderNumber(),
+            dto.price()
         );
 
-        return new CompleteOrderDTO(
-            result.getId(),
-            result.getOrderNumber(),
-            result.getStatus().getDescription(),
-            result.getCustomerId(),
-            result.getNotes(),
-            result.getOriginalPrice(),
-            result.getCreatedAt(),
-            result.getUpdatedAt(),
-            null,
-            null,
-            null
-        );
+        List<OrderProductsEntityJPA> productEntities = dto.products().stream()
+            .map(productDTO -> {
+                OrderProductIdJPA productPk = new OrderProductIdJPA(null, productDTO.id() );
+
+                OrderProductsEntityJPA productJPA = new OrderProductsEntityJPA(
+                    productPk,
+                    productDTO.name(),
+                    productDTO.quantity(),
+                    productDTO.price(),
+                    productDTO.totalValue()
+                );
+
+                productJPA.setOrder(orderJPA);
+
+                return productJPA;
+            })
+            .toList();
+
+        orderJPA.setProducts(productEntities);
+
+        OrderEntityJPA result = ordersRepository.save(orderJPA);
+
+        return createCompleteOrderDTOFromJPA(result);
     }
 
     @Override
@@ -119,58 +113,7 @@ public class OrderAdapter implements OrderDatasource {
            dto.created_at()
        ) );
 
-        return new CompleteOrderDTO(
-            result.getId(),
-            result.getOrderNumber(),
-            result.getStatus().getDescription(),
-            result.getCustomerId(),
-            result.getNotes(),
-            result.getOriginalPrice(),
-            result.getCreatedAt(),
-            result.getUpdatedAt(),
-            null,
-            null,
-            null
-        );
-    }
-
-    @Override
-    public List<OrderProductOutDTO> findOrderProductsByOrderId(UUID orderId) {
-        var result = orderProductsRepository.findAllById_OrderId(orderId);
-
-        return result.stream()
-            .map( orderProduct ->
-                new OrderProductOutDTO(
-                    orderProduct.getId().getOrderId(),
-                    orderProduct.getId().getProductId(),
-                    orderProduct.getQuantity()
-                )
-            ).toList();
-    }
-
-    @Override
-    public List<OrderProductOutDTO> saveAllOrderProducts(List<OrderProductOutDTO> dto) {
-        List<OrderProductsEntityJPA> toPersiste = dto.stream()
-            .map( item ->
-                new OrderProductsEntityJPA(
-                    new OrderProductIdJPA(
-                        item.orderId(),
-                        item.productId()
-                    ),
-                    item.quantity()
-                )
-            ).toList();
-
-        var result = orderProductsRepository.saveAll(toPersiste);
-
-        return result.stream()
-            .map(item ->
-                new OrderProductOutDTO(
-                    item.getId().getOrderId(),
-                    item.getId().getProductId(),
-                    item.getQuantity()
-                )
-            ).toList();
+        return createCompleteOrderDTOFromJPA(result);
     }
 
     @Override
@@ -224,21 +167,36 @@ public class OrderAdapter implements OrderDatasource {
 
     private List<CompleteOrderDTO> mountCompleteOrdersList(List<OrderEntityJPA> orders) {
         return orders.stream()
-            .map(order ->
-                new CompleteOrderDTO(
-                    order.getId(),
-                    order.getOrderNumber(),
-                    order.getStatus().getDescription(),
-                    order.getCustomerId(),
-                    order.getNotes(),
-                    order.getOriginalPrice(),
-                    order.getCreatedAt(),
-                    order.getUpdatedAt(),
-                    null,
-                    null,
-                    null
+            .map( this::createCompleteOrderDTOFromJPA )
+            .toList();
+    }
+
+    private CompleteOrderDTO createCompleteOrderDTOFromJPA(OrderEntityJPA jpaEntity) {
+
+        List<OrderProductItemOutDTO> productItems = jpaEntity.getProducts().stream()
+            .map(productJPA ->
+                new OrderProductItemOutDTO(
+                    productJPA.getId().getProductId(),
+                    productJPA.getName(),
+                    productJPA.getPrice(),
+                    productJPA.getQuantity(),
+                    productJPA.getTotalValue()
                 )
             ).toList();
+
+        return new CompleteOrderDTO(
+            jpaEntity.getId(),
+            jpaEntity.getOrderNumber(),
+            jpaEntity.getStatus().getDescription(),
+            jpaEntity.getCustomerId(),
+            jpaEntity.getNotes(),
+            jpaEntity.getOriginalPrice(),
+            jpaEntity.getCreatedAt(),
+            jpaEntity.getUpdatedAt(),
+            Optional.of(productItems),
+            null,
+            null
+        );
     }
 
 }

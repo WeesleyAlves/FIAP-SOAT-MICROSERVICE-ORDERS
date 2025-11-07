@@ -1,10 +1,10 @@
 package br.com.fiap.techchallenge.orders.infrastructure.entities;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_products")
@@ -15,13 +15,27 @@ public class OrderProductsEntityJPA {
     @EmbeddedId
     private OrderProductIdJPA id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("orderId")
+    @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private OrderEntityJPA order;
+
     private Integer quantity;
 
-    public OrderProductsEntityJPA(
-        OrderProductIdJPA id,
-        Integer quantity
-    ) {
-        this.id = id;
+    @Transient
+    private String name;
+
+    @Transient
+    private BigDecimal price;
+
+    @Transient
+    private BigDecimal totalValue;
+
+    public OrderProductsEntityJPA(OrderProductIdJPA productPk, String name, Integer quantity, BigDecimal price,  BigDecimal totalValue) {
+        this.id = productPk;
         this.quantity = quantity;
+        this.name = name;
+        this.price = price;
+        this.totalValue = totalValue;
     }
 }

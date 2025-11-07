@@ -1,7 +1,5 @@
 package br.com.fiap.techchallenge.orders.application.dtos.out;
 
-import br.com.fiap.techchallenge.orders.core.entities.OrderProductItemEntity;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +15,7 @@ public record CompleteOrderDTO(
     BigDecimal price,
     LocalDateTime created_at,
     LocalDateTime updated_at,
-    Optional<List<OrderProductItemEntity>> products,
+    Optional<List<OrderProductItemOutDTO>> products,
     Optional<UUID> payment_id,
     Optional<String> payment_qr_data
 ) {}

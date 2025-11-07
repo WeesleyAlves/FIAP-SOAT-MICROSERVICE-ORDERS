@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.orders.application.dtos.out;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public record CreateOrderDTO(
@@ -8,5 +9,6 @@ public record CreateOrderDTO(
     String notes,
     Integer orderNumber,
     BigDecimal price,
-    String status
+    String status,
+    List<OrderProductItemOutDTO> products
 ){}
