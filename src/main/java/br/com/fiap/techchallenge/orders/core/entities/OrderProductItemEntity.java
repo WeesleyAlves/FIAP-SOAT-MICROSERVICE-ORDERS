@@ -7,10 +7,10 @@ import java.util.UUID;
 
 @Getter
 public class OrderProductItemEntity {
-    private final String name;
-    private final BigDecimal price;
     private final UUID id;
 
+    private String name;
+    private BigDecimal price;
     private int quantity;
     private BigDecimal totalValue;
 
@@ -37,6 +37,14 @@ public class OrderProductItemEntity {
 
         this.name = name;
         this.price = price;
+        this.id = id;
+    }
+
+    public OrderProductItemEntity( UUID id ){
+        if (id == null) {
+            throw new IllegalArgumentException("O ID do produto não pode ser nulo.");
+        }
+
         this.id = id;
     }
 

@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.orders.api.handlers.common.ApiResponseDTO;
 import br.com.fiap.techchallenge.orders.application.controllers.PublicController;
 import br.com.fiap.techchallenge.orders.application.dtos.in.NewOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.QueueOrderDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
@@ -44,13 +45,13 @@ public class PublicHandler {
     }
 
     @GetMapping("/queue")
-    public ResponseEntity<ApiResponseDTO<String>> listQueue() {
-//        var response = publicController.getPublicOrders();
+    public ResponseEntity<ApiResponseDTO<List<QueueOrderDTO>>> listQueue() {
+        var response = publicController.getPublicOrders();
 
         return ResponseEntity
             .status(200)
             .body(
-                    ApiResponseDTO.send(200, 10+" itens encontrados", "")
+                    ApiResponseDTO.send(200, response.size()+" itens encontrados", response)
             );
     }
 

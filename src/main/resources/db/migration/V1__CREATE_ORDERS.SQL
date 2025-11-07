@@ -12,7 +12,10 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE TABLE IF NOT EXISTS order_products (
     order_id UUID NOT NULL,
     product_id UUID NOT NULL,
-    quantity INTEGER,
+    quantity INTEGER NOT NULL,
+    price DECIMAL(8, 2) NOT NULL,
+    total_value DECIMAL(8, 2) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     PRIMARY KEY (order_id, product_id)
 );
 

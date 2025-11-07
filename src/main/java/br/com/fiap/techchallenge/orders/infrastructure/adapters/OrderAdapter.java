@@ -54,7 +54,7 @@ public class OrderAdapter implements OrderDatasource {
 
     @Override
     public List<CompleteOrderDTO> findOrderByStatusIn(List<OrderStatus> statusIn) {
-        var result = ordersRepository.findByStatusIn(statusIn);
+        var result = ordersRepository.findByStatusInWithProducts(statusIn);
 
         return mountCompleteOrdersList(result);
     }

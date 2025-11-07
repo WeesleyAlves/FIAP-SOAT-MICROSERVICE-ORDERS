@@ -2,14 +2,19 @@ package br.com.fiap.techchallenge.orders.application.controllers;
 
 import br.com.fiap.techchallenge.orders.application.dtos.in.NewOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.QueueOrderDTO;
 import br.com.fiap.techchallenge.orders.application.gateways.*;
 import br.com.fiap.techchallenge.orders.application.presenters.OrderPresenter;
+import br.com.fiap.techchallenge.orders.core.entities.CompleteOrderEntity;
 import br.com.fiap.techchallenge.orders.core.use_cases.CreateOrderUseCase;
+import br.com.fiap.techchallenge.orders.core.use_cases.GetPublicOrdersUseCase;
 import br.com.fiap.techchallenge.orders.core.use_cases.OrderNumberGeneratorUseCase;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
+
+import java.util.List;
 
 
 public class PublicController {
@@ -50,5 +55,15 @@ public class PublicController {
         inventoryGateway.updateInventory();
 
         return OrderPresenter.createCompleteOrderDTO(persistedOrder);
+    }
+
+    public List<QueueOrderDTO> getPublicOrders() {
+        OrderGateway orderGateway = new OrderGateway(orderDatasource);
+
+        var getPublicOrdersUseCase = new GetPublicOrdersUseCase(orderGateway);
+
+        List<CompleteOrderEntity> ordersList = getPublicOrdersUseCase.run();
+
+        return OrderPresenter.createQueueOrderDTO(ordersList);
     }
 }

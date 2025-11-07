@@ -22,13 +22,10 @@ public class OrderProductsEntityJPA {
 
     private Integer quantity;
 
-    @Transient
     private String name;
 
-    @Transient
     private BigDecimal price;
 
-    @Transient
     private BigDecimal totalValue;
 
     public OrderProductsEntityJPA(OrderProductIdJPA productPk, String name, Integer quantity, BigDecimal price,  BigDecimal totalValue) {
