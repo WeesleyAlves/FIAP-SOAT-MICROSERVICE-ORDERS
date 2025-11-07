@@ -1,6 +1,5 @@
 package br.com.fiap.techchallenge.orders.api.handlers;
 
-
 import br.com.fiap.techchallenge.orders.api.exceptions.EmptyOrderProductListException;
 import br.com.fiap.techchallenge.orders.api.exceptions.OrderNotFoundException;
 import br.com.fiap.techchallenge.orders.api.exceptions.OrderNumberSequenceNotInitializedException;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -59,14 +57,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<ApiResponseDTO<Void>> handleHttpMessageConversionException(HttpMessageConversionException ex) {
+    public ResponseEntity<ApiResponseDTO<Void>> handleHttpMessageConversionException() {
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiResponseDTO.send(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dados da requisição incorretos."));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponseDTO<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<ApiResponseDTO<Void>> handleMethodArgumentTypeMismatchException() {
     return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiResponseDTO.send(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dados da requisição incorretos."));

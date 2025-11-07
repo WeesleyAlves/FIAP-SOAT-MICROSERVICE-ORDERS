@@ -36,7 +36,6 @@ public class CreateOrderUseCase {
             .map(OrderProductInDTO::id)
             .toList();
 
-
         List<OrderProductItemEntity> productEntitiesResult = productGateway.getAllByIds(productsIds);
 
         List<OrderProductItemEntity> productsEntitiesCompleteList = new ArrayList<>();
@@ -81,7 +80,6 @@ public class CreateOrderUseCase {
         orderEntity.setProducts(productsEntitiesCompleteList);
 
         orderEntity = orderGateway.save(orderEntity);
-
 
         return orderEntity;
     }

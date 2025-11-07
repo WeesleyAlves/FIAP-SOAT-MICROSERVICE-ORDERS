@@ -1,6 +1,5 @@
 package br.com.fiap.techchallenge.orders.core.use_cases;
 
-
 import br.com.fiap.techchallenge.orders.application.gateways.OrderNumberGateway;
 import br.com.fiap.techchallenge.orders.core.entities.OrderNumberEntity;
 

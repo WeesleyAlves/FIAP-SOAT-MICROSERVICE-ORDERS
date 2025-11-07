@@ -17,5 +17,4 @@ public interface OrderDatasource {
 
     OrderNumberDTO saveOrderNumber(OrderNumberDTO dto);
     OrderNumberDTO findTopOrderNumber();
-//    Long countOrderNumber();
 }

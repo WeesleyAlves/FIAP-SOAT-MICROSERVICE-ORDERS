@@ -1,6 +1,5 @@
 package br.com.fiap.techchallenge.orders.infrastructure.adapters;
 
-
 import br.com.fiap.techchallenge.orders.api.exceptions.OrderNotFoundException;
 import br.com.fiap.techchallenge.orders.api.exceptions.OrderNumberSequenceNotInitializedException;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;

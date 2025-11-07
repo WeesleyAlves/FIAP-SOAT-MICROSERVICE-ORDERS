@@ -75,7 +75,6 @@ public class PublicController {
 
         var getOrderUseCase = new GetCompleteOrderByIdUseCase( orderGateway );
 
-
         var orderEntity = getOrderUseCase.run(orderId);
 
         var paymentEntity = paymentGateway.getByOrderID(orderId);
