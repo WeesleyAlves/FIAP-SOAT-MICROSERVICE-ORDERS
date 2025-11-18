@@ -3,6 +3,7 @@ name: SonarCloud
 on:
   pull_request:
   push:
+    branches: [ main ]
 
 jobs:
   build:
@@ -21,11 +22,7 @@ jobs:
           java-version: 23
 
       - name: Build with tests
-        run: mvn clean verify
+        run: mvn clean verify -Dspring.profiles.active=test
 
       - name: SonarCloud Scan
-        run: mvn -B sonar:sonar \
-          -Dsonar.projectKey=${{secrets.SONAR_PROJECT_KEY}} \
-          -Dsonar.organization=${{secrets.SONAR_ORGANIZATION}} \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn -B sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
