@@ -1,0 +1,32 @@
+name: SonarCloud
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      # necessário para análise de PR
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build with tests
+        run: mvn clean verify   # ou ./gradlew test jacocoTestReport
+
+      - name: SonarCloud Scan
+        run: mvn -B sonar:sonar \
+          -Dsonar.projectKey=${{SONAR_PROJECT_KEY}} \
+          -Dsonar.organization=${{SONAR_ORGANIZATION}} \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
