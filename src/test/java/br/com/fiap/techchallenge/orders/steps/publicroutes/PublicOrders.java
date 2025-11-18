@@ -6,7 +6,6 @@ import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CreateOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
-import br.com.fiap.techchallenge.orders.infrastructure.adapters.InventoryAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.PaymentAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.ProductsAdapter;
@@ -43,17 +42,15 @@ public class PublicOrders {
     @Autowired
     private PaymentAdapter paymentAdapter;
 
-    @Autowired
-    private InventoryAdapter inventoryAdapter;
+    private CompleteOrderDTO orderByIdDTO;
 
-    private CompleteOrderDTO pedidoDTO;
-
+    List<CompleteOrderDTO> ordersQueue;
 
     @Dado("que existe um pedido com os seguintes dados:")
     public void queExisteUmPedidoComOsSeguintesDados(DataTable dataTable) {
         Map<String, String> dados = dataTable.asMaps().getFirst();
 
-        pedidoDTO = new CompleteOrderDTO(
+        orderByIdDTO = new CompleteOrderDTO(
                 UUID.fromString(dados.get("id")),
                 Integer.valueOf(dados.get("order_number")),
                 dados.get("status"),
@@ -80,27 +77,27 @@ public class PublicOrders {
                 ))
                 .toList();
 
-        pedidoDTO = new CompleteOrderDTO(
-                pedidoDTO.id(),
-                pedidoDTO.order_number(),
-                pedidoDTO.status(),
-                pedidoDTO.customer_id(),
-                pedidoDTO.notes(),
-                pedidoDTO.price(),
-                pedidoDTO.created_at(),
-                pedidoDTO.updated_at(),
+        orderByIdDTO = new CompleteOrderDTO(
+                orderByIdDTO.id(),
+                orderByIdDTO.order_number(),
+                orderByIdDTO.status(),
+                orderByIdDTO.customer_id(),
+                orderByIdDTO.notes(),
+                orderByIdDTO.price(),
+                orderByIdDTO.created_at(),
+                orderByIdDTO.updated_at(),
                 Optional.of(produtos),
-                pedidoDTO.payment_id(),
-                pedidoDTO.payment_qr_data()
+                orderByIdDTO.payment_id(),
+                orderByIdDTO.payment_qr_data()
         );
 
-        Mockito.when(orderAdapter.findOrderByID(pedidoDTO.id()))
-                .thenReturn(pedidoDTO);
+        Mockito.when(orderAdapter.findOrderByID(orderByIdDTO.id()))
+                .thenReturn(orderByIdDTO);
 
-        Mockito.when(paymentAdapter.getPaymentByOrderId(pedidoDTO.id()))
+        Mockito.when(paymentAdapter.getPaymentByOrderId(orderByIdDTO.id()))
                 .thenReturn(new PaymentInDTO(
-                        pedidoDTO.payment_id().orElseThrow(),
-                        pedidoDTO.payment_qr_data().orElseThrow()
+                        orderByIdDTO.payment_id().orElseThrow(),
+                        orderByIdDTO.payment_qr_data().orElseThrow()
                 ));
     }
 
@@ -182,5 +179,70 @@ public class PublicOrders {
 
         Mockito.when(productsAdapter.getAllByIds(productsIds))
                 .thenReturn(productsList);
+    }
+
+    @Dado("que existem os seguintes pedidos na fila:")
+    public void queExistemOsSeguintesPedidosNaFila(DataTable dataTable){
+        ordersQueue = dataTable.asMaps().stream()
+            .map(map -> new CompleteOrderDTO(
+                    UUID.fromString( map.get("id") ),
+                    Integer.parseInt( map.get("order_number") ),
+                    map.get("status"),
+                    UUID.fromString( map.get("customer_id") ),
+                    map.get("notes"),
+                    new BigDecimal( map.get("price") ),
+                    OffsetDateTime.parse(map.get("created_at")).toLocalDateTime(),
+                    OffsetDateTime.parse(map.get("updated_at")).toLocalDateTime(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty()
+            ))
+            .toList();
+    }
+
+    @E("a seguinte relacao de pedido produto:")
+    public void aSeguinteRelacaoDePedidoProduto(DataTable dataTable){
+        List<CompleteOrderDTO> updatedOrders = new  ArrayList<>();
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+
+        List<Map<String, Object>> products = new ArrayList<>();
+
+        for (Map<String, String> row : rows) {
+            Map<String, Object> product = new HashMap<>();
+
+            product.put("order_id", row.get("order_id"));
+            product.put("product_id", row.get("product_id"));
+            product.put("name", row.get("name"));
+            product.put("quantity", Integer.parseInt(row.get("quantity")));
+            product.put("price", Double.parseDouble(row.get("price")));
+            product.put("total_value", Double.parseDouble(row.get("total_value")));
+
+            products.add(product);
+        }
+
+        for (CompleteOrderDTO order : ordersQueue) {
+
+            List<OrderProductItemOutDTO> productsForOrder = new ArrayList<>();
+
+            for (Map<String, Object> product : products) {
+                var uuid = UUID.fromString( (String) product.get("order_id") );
+                if (order.id().equals( uuid )) {
+                    productsForOrder.add( new OrderProductItemOutDTO(
+                            UUID.fromString( product.get("product_id").toString() ),
+                            product.get("name").toString(),
+                            new BigDecimal( product.get("price").toString() ),
+                            Integer.parseInt( product.get("quantity").toString() ),
+                            new BigDecimal( product.get("total_value").toString() )
+                    ) );
+                }
+            }
+
+            CompleteOrderDTO updated = order.withProducts(productsForOrder);
+
+            updatedOrders.add(updated);
+        }
+
+        Mockito.when(orderAdapter.findOrderByStatusIn( any() ))
+            .thenReturn(updatedOrders);
     }
 }

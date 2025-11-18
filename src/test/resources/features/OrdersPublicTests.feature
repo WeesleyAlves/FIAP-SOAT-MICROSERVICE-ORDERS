@@ -5,6 +5,16 @@ Funcionalidade: Testar os endpoints publicos de pedidos
 
 
   Cenario: Consultar fila publica de pedidos
+    Dado que existem os seguintes pedidos na fila:
+      | id                                    | order_number  | status    | customer_id                           | notes         | price | created_at            | updated_at            |
+      | 520aab01-9054-4532-8aff-6dc3610d2b6c  | 1             | Recebido  | 09abf858-04d3-412d-bfcf-bc5ba35dfea0  | Sem mostarda  | 48.80 | 2025-11-03T18:00:00Z  | 2025-11-03T18:00:00Z  |
+      | 4ab889b9-22ac-43f7-aeab-47b211406968  | 2             | Pronto    | 387efbc6-82d6-4537-b1b9-eeb4940bd48b  | Sem cebola    | 24.40 | 2025-11-03T18:00:00Z  | 2025-11-03T18:00:00Z  |
+    E a seguinte relacao de pedido produto:
+      | order_id                              | product_id                            | quantity  | price   | total_value | name          |
+      | 520aab01-9054-4532-8aff-6dc3610d2b6c  | 84edb96f-c2e5-425b-a26e-ae583ff19d31  | 2         | 15.90   | 31.80       | X-Burger      |
+      | 520aab01-9054-4532-8aff-6dc3610d2b6c  | ba931dea-9fba-4587-82c7-b724069051f8  | 2         | 8.50    | 17.00       | Refrigerante  |
+      | 4ab889b9-22ac-43f7-aeab-47b211406968  | 84edb96f-c2e5-425b-a26e-ae583ff19d31  | 1         | 15.90   | 15.90       | X-Burger      |
+      | 4ab889b9-22ac-43f7-aeab-47b211406968  | ba931dea-9fba-4587-82c7-b724069051f8  | 1         | 8.50    | 8.50        | Refrigerante  |
     Quando eu realizar um requisicao GET para "/queue"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "orders-public-queue-schema.json"

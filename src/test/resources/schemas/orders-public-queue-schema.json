@@ -17,18 +17,25 @@
           "price", "created_at", "updated_at", "products"
         ],
         "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "order_number": { "type": "integer" },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "enum": ["520aab01-9054-4532-8aff-6dc3610d2b6c", "4ab889b9-22ac-43f7-aeab-47b211406968"]
+          },
+          "order_number": { "type": "integer", "enum": [1, 2] },
           "status": {
             "type": "string",
             "enum": [
-              "Aguardando Pagamento", "Recebido", "Em Preparação",
-              "Pronto", "Finalizado", "Descartado", "Cancelado"
+              "Recebido", "Em Preparação", "Pronto"
             ]
           },
-          "customer_id": { "type": "string", "format": "uuid" },
-          "notes": { "type": "string" },
-          "price": { "type": "number" },
+          "customer_id": {
+            "type": "string",
+            "format": "uuid",
+            "enum": ["09abf858-04d3-412d-bfcf-bc5ba35dfea0", "387efbc6-82d6-4537-b1b9-eeb4940bd48b"]
+          },
+          "notes": { "type": "string", "enum": ["Sem mostarda", "Sem cebola"] },
+          "price": { "type": "number", "enum": [48.80, 24.40] },
           "created_at": { "type": "string", "format": "date-time" },
           "updated_at": { "type": "string", "format": "date-time" },
           "products": {
@@ -37,11 +44,15 @@
               "type": "object",
               "required": ["id", "name", "quantity", "price", "totalValue"],
               "properties": {
-                "id": { "type": "string", "format": "uuid" },
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "enum": ["84edb96f-c2e5-425b-a26e-ae583ff19d31", "ba931dea-9fba-4587-82c7-b724069051f8"]
+                },
                 "name": { "type": "string" },
-                "quantity": { "type": "integer" },
-                "price": { "type": "number" },
-                "totalValue": { "type": "number" }
+                "quantity": { "type": "integer", "enum": [1, 2, 3] },
+                "price": { "type": "number", "enum": [ 15.90, 8.50 ] },
+                "totalValue": { "type": "number", "enum": [31.80, 17.00, 15.90, 8.50] }
               }
             }
           }
