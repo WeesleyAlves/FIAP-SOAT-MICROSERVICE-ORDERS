@@ -30,17 +30,21 @@ Funcionalidade: Testar os endpoints publicos de pedidos
         "customer_id": "8c6e378f-9b3c-4e97-9fbe-ffbfb659d15f",
         "products": [
           {
-            "id": "f809b1c5-6f70-8192-d345-6789012345f0",
+            "id": "84edb96f-c2e5-425b-a26e-ae583ff19d31",
             "quantity": 1
           },
           {
-            "id": "e7f9a0b4-5e6f-7081-c234-5678901234ef",
+            "id": "ba931dea-9fba-4587-82c7-b724069051f8",
             "quantity": 1
           }
         ],
-        "notes": "Com cobertura de morango"
+        "notes": "Sem mostarda"
       }
       """
+    E os seguintes produtos cadastrados:
+      | id                                   | name         | price |
+      | 84edb96f-c2e5-425b-a26e-ae583ff19d31 | X-Burger     | 15.90 |
+      | ba931dea-9fba-4587-82c7-b724069051f8 | Refrigerante | 8.50  |
     Quando eu realizar uma requisicao POST para "/order"
     Entao deve retornar status 201
     E deve retornar um JSON com o schema "order-created-schema.json"

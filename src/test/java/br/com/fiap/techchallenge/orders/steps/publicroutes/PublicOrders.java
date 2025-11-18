@@ -1,9 +1,18 @@
 package br.com.fiap.techchallenge.orders.steps.publicroutes;
 
+import br.com.fiap.techchallenge.orders.application.dtos.in.PaymentInDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.in.ProductInDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.CreateOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
+import br.com.fiap.techchallenge.orders.infrastructure.adapters.InventoryAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
+import br.com.fiap.techchallenge.orders.infrastructure.adapters.PaymentAdapter;
+import br.com.fiap.techchallenge.orders.infrastructure.adapters.ProductsAdapter;
 import br.com.fiap.techchallenge.orders.steps.common.TestContext;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
@@ -11,17 +20,31 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
+
+import static org.mockito.ArgumentMatchers.any;
 
 
 public class PublicOrders {
     @Autowired
     private TestContext context;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private OrderAdapter orderAdapter;
+
+    @Autowired
+    private ProductsAdapter productsAdapter;
+
+    @Autowired
+    private PaymentAdapter paymentAdapter;
+
+    @Autowired
+    private InventoryAdapter inventoryAdapter;
 
     private CompleteOrderDTO pedidoDTO;
 
@@ -31,17 +54,17 @@ public class PublicOrders {
         Map<String, String> dados = dataTable.asMaps().getFirst();
 
         pedidoDTO = new CompleteOrderDTO(
-                UUID.fromString( dados.get("id") ),
-                Integer.valueOf( dados.get("order_number") ),
+                UUID.fromString(dados.get("id")),
+                Integer.valueOf(dados.get("order_number")),
                 dados.get("status"),
-                UUID.fromString( dados.get("customer_id") ),
+                UUID.fromString(dados.get("customer_id")),
                 dados.get("notes"),
-                new BigDecimal( dados.get("original_price") ),
+                new BigDecimal(dados.get("original_price")),
                 OffsetDateTime.parse(dados.get("created_at")).toLocalDateTime(),
                 OffsetDateTime.parse(dados.get("updated_at")).toLocalDateTime(),
                 Optional.empty(),
                 Optional.of(UUID.fromString(dados.get("payment_id"))),
-                Optional.of( dados.get( "payment_qr_data" ) )
+                Optional.of(dados.get("payment_qr_data"))
         );
     }
 
@@ -51,9 +74,9 @@ public class PublicOrders {
                 .map(map -> new OrderProductItemOutDTO(
                         UUID.fromString(map.get("id")),
                         map.get("name"),
-                        new BigDecimal( map.get("price") ),
-                        Integer.parseInt( map.get("quantity") ),
-                        new BigDecimal( map.get("totalValue") )
+                        new BigDecimal(map.get("price")),
+                        Integer.parseInt(map.get("quantity")),
+                        new BigDecimal(map.get("totalValue"))
                 ))
                 .toList();
 
@@ -66,45 +89,98 @@ public class PublicOrders {
                 pedidoDTO.price(),
                 pedidoDTO.created_at(),
                 pedidoDTO.updated_at(),
-                Optional.of( produtos ),
+                Optional.of(produtos),
                 pedidoDTO.payment_id(),
                 pedidoDTO.payment_qr_data()
         );
 
+        Mockito.when(orderAdapter.findOrderByID(pedidoDTO.id()))
+                .thenReturn(pedidoDTO);
 
-
-
-        System.out.println( "payment id : "+pedidoDTO.payment_id() );
-        System.out.println( "payment qr : "+pedidoDTO.payment_qr_data() );
-
-        Mockito.when( orderAdapter.findOrderByID( pedidoDTO.id() ) )
-            .thenReturn( pedidoDTO );
+        Mockito.when(paymentAdapter.getPaymentByOrderId(pedidoDTO.id()))
+                .thenReturn(new PaymentInDTO(
+                        pedidoDTO.payment_id().orElseThrow(),
+                        pedidoDTO.payment_qr_data().orElseThrow()
+                ));
     }
 
     @Dado("que eu possuo os seguintes dados do pedido:")
-    public void queEuPossuoOsSeguintesDadosDoPedido(String json) {
-        context.setBodyJson( json );
+    public void queEuPossuoOsSeguintesDadosDoPedido(String json) throws JsonProcessingException {
+        context.setBodyJson(json);
 
-        // Configura o mock de retorno da criação
-//        Order pedidoCriado = new Order();
-//        pedidoCriado.setId(UUID.randomUUID());
-//        pedidoCriado.setOrderNumber(123);
-//        pedidoCriado.setStatus("Recebido");
-//        pedidoCriado.setCustomerId(UUID.fromString("8c6e378f-9b3c-4e97-9fbe-ffbfb659d15f"));
-//        pedidoCriado.setNotes("Com cobertura de morango");
-//        pedidoCriado.setCreatedAt(OffsetDateTime.now());
-//        pedidoCriado.setUpdatedAt(OffsetDateTime.now());
-//        pedidoCriado.setPaymentId(UUID.randomUUID());
-//        pedidoCriado.setQrData("qrcode-pix-1234567890");
-//
-//        List<Product> produtos = Arrays.asList(
-//                new Product(UUID.fromString("f809b1c5-6f70-8192-d345-6789012345f0"), "Sorvete de Chocolate", 1, 15.0, 15.0),
-//                new Product(UUID.fromString("e7f9a0b4-5e6f-7081-c234-5678901234ef"), "Cobertura de Morango", 1, 5.0, 5.0)
-//        );
-//
-//        pedidoCriado.setProducts(produtos);
-//        pedidoCriado.setPrice(produtos.stream().mapToDouble(Product::getTotalValue).sum());
-//
-//        when(orderService.createOrder(any(Order.class))).thenReturn(pedidoCriado);
+        var inputOrder = objectMapper.readValue(json, CreateOrderDTO.class);
+        LocalDateTime fixedTime = LocalDateTime.now();
+        String qrData = "qr_data_12347890345";
+        UUID paymentId = UUID.randomUUID();
+
+        var productsList = new ArrayList<OrderProductItemOutDTO>();
+
+        productsList.add(new OrderProductItemOutDTO(
+            UUID.fromString("84edb96f-c2e5-425b-a26e-ae583ff19d31"),
+            "X-Burger",
+            BigDecimal.valueOf(15.90),
+            1,
+            BigDecimal.valueOf(15.90)
+        ));
+
+        productsList.add(new OrderProductItemOutDTO(
+            UUID.fromString("ba931dea-9fba-4587-82c7-b724069051f8"),
+            "Refrigerante",
+            BigDecimal.valueOf(8.50),
+            1,
+            BigDecimal.valueOf(8.50)
+        ));
+
+        var expectedSavedOrder = new CompleteOrderDTO(
+                UUID.randomUUID(),
+                1,
+                "Recebido",
+                UUID.randomUUID(),
+                inputOrder.notes(),
+                BigDecimal.valueOf(10.00),
+                fixedTime,
+                fixedTime,
+                Optional.of(productsList),
+                Optional.of(paymentId),
+                Optional.of(qrData)
+        );
+
+        Mockito.when(orderAdapter.findTopOrderNumber()).thenReturn(new OrderNumberDTO(
+            0L,
+            0
+        ));
+
+        Mockito.when(orderAdapter.saveOrderNumber( any() ) ).thenReturn(
+                new OrderNumberDTO(
+                    2L,
+                    2
+                )
+        );
+
+        Mockito.when( paymentAdapter.createPayment() )
+                .thenReturn( new PaymentInDTO(
+                    paymentId,
+                    qrData
+                ));
+
+
+        Mockito.when(orderAdapter.saveOrder(any(CreateOrderDTO.class)))
+                .thenReturn(expectedSavedOrder);
+    }
+
+    @E("os seguintes produtos cadastrados:")
+    public void osSeguintesProdutosCadastrados(DataTable dataTable) {
+        List<ProductInDTO> productsList = dataTable.asMaps().stream()
+                .map(map -> new ProductInDTO(
+                        UUID.fromString(map.get("id")),
+                        map.get("name"),
+                        new BigDecimal(map.get("price"))
+                ))
+                .toList();
+
+        var productsIds = productsList.stream().map(ProductInDTO::id).toList();
+
+        Mockito.when(productsAdapter.getAllByIds(productsIds))
+                .thenReturn(productsList);
     }
 }
