@@ -25,12 +25,4 @@ public class ApiResponseDTO<T> {
     public static <T> ApiResponseDTO<T> send(Integer code, String message) {
         return send(code, message, null);
     }
-
-    public static <T> ApiResponseDTO<T> send(String message) {
-        return send(200, message, null);
-    }
-
-    public static <T> ApiResponseDTO<T> send(Integer code) {
-        return send(code, null, null);
-    }
 }
