@@ -35,4 +35,20 @@ public record CompleteOrderDTO(
             this.payment_qr_data
         );
     }
+
+    public CompleteOrderDTO withStatus(String newStatus) {
+        return new CompleteOrderDTO(
+                this.id,
+                this.order_number,
+                newStatus,
+                this.customer_id,
+                this.notes,
+                this.price,
+                this.created_at,
+                this.updated_at,
+                this.products,
+                this.payment_id,
+                this.payment_qr_data
+        );
+    }
 }

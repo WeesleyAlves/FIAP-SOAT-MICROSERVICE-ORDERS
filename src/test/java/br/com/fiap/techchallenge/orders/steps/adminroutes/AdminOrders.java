@@ -1,12 +1,21 @@
 package br.com.fiap.techchallenge.orders.steps.adminroutes;
 
+import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
 import br.com.fiap.techchallenge.orders.steps.common.TestContext;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -16,6 +25,8 @@ public class AdminOrders {
 
     @Autowired
     private OrderAdapter orderAdapter;
+
+    CompleteOrderDTO existingOrderDTO;
 
     @Dado("que preciso reiniciar a fila de pedidos")
     public void quePrecisaReiniciarAFilaDePedidos() {
@@ -33,31 +44,42 @@ public class AdminOrders {
 
     @Dado("que existe um pedido com o seguinte o ID {string}")
     public void queExisteUmPedidoComOSeguinteID(String id) {
-        // Configura o mock de retorno da criação
-//        Order pedidoCriado = new Order();
-//        pedidoCriado.setId(UUID.randomUUID());
-//        pedidoCriado.setOrderNumber(123);
-//        pedidoCriado.setStatus("Recebido");
-//        pedidoCriado.setCustomerId(UUID.fromString("8c6e378f-9b3c-4e97-9fbe-ffbfb659d15f"));
-//        pedidoCriado.setNotes("Com cobertura de morango");
-//        pedidoCriado.setCreatedAt(OffsetDateTime.now());
-//        pedidoCriado.setUpdatedAt(OffsetDateTime.now());
-//        pedidoCriado.setPaymentId(UUID.randomUUID());
-//        pedidoCriado.setQrData("qrcode-pix-1234567890");
-//
-//        List<Product> produtos = Arrays.asList(
-//                new Product(UUID.fromString("f809b1c5-6f70-8192-d345-6789012345f0"), "Sorvete de Chocolate", 1, 15.0, 15.0),
-//                new Product(UUID.fromString("e7f9a0b4-5e6f-7081-c234-5678901234ef"), "Cobertura de Morango", 1, 5.0, 5.0)
-//        );
-//
-//        pedidoCriado.setProducts(produtos);
-//        pedidoCriado.setPrice(produtos.stream().mapToDouble(Product::getTotalValue).sum());
-//
-//        when(orderService.createOrder(any(Order.class))).thenReturn(pedidoCriado);
+        List<OrderProductItemOutDTO> products = new ArrayList<>();
+
+        products.add(new OrderProductItemOutDTO(
+                UUID.randomUUID(),
+                "Suco de laranja",
+                new BigDecimal("10.00"),
+                2,
+                new BigDecimal("20.00")
+        ));
+
+        existingOrderDTO = new CompleteOrderDTO(
+                UUID.fromString( id ),
+                3,
+                "Aguardando Pagamento",
+                UUID.randomUUID(),
+                "",
+                new BigDecimal("20.00"),
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                Optional.of(products),
+                Optional.empty(),
+                Optional.empty()
+        );
+
+        Mockito.when(orderAdapter.findOrderByID( UUID.fromString(id) ) )
+            .thenReturn(existingOrderDTO);
     }
 
     @E("os seguintes dados para a atualizacao:")
     public void osSeguintesDadosParaAtualizacao(String json) {
         context.setBodyJson( json );
+
+        existingOrderDTO = existingOrderDTO.withStatus("Recebido");
+
+
+        Mockito.when(orderAdapter.updateOrder( any() ) )
+            .thenReturn(existingOrderDTO);
     }
 }
