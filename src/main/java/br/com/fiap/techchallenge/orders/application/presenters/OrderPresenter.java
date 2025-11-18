@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class OrderPresenter {
 
-    private OrderPresenter() {
+    public OrderPresenter() {
         throw new IllegalStateException("Order presenter não pode ser instanciado, é uma classe de utilidade.");
     }
 
