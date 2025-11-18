@@ -1,11 +1,13 @@
 package br.com.fiap.techchallenge.orders.steps.publicroutes;
 
+import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
 import io.cucumber.junit.platform.engine.Constants;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @Suite
 @SelectClasspathResource("features/OrdersPublicTests.feature")
@@ -17,4 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CucumberPublicTests {
+    @MockitoBean
+    private OrderAdapter orderAdapter;
 }

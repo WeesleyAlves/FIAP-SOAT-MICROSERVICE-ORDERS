@@ -1,63 +1,84 @@
 package br.com.fiap.techchallenge.orders.steps.publicroutes;
 
+import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
+import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
+import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
 import br.com.fiap.techchallenge.orders.steps.common.TestContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.pt.*;
+import io.cucumber.java.pt.Dado;
+import io.cucumber.java.pt.E;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.*;
 
 
 public class PublicOrders {
     @Autowired
     private TestContext context;
 
-    private final ObjectMapper mapper = new ObjectMapper();
 
-//    @MockitoBean
-//    private OrderService orderService;
-//    private Order pedidoMock;
+    @Autowired
+    private OrderAdapter orderAdapter;
+
+    private CompleteOrderDTO pedidoDTO;
+
 
     @Dado("que existe um pedido com os seguintes dados:")
     public void queExisteUmPedidoComOsSeguintesDados(DataTable dataTable) {
-//        Map<String, String> dados = dataTable.asMaps().get(0);
-//
-//        pedidoMock = new Order();
-//        pedidoMock.setId(UUID.fromString(dados.get("id")));
-//        pedidoMock.setOrderNumber(Integer.parseInt(dados.get("order_number")));
-//        pedidoMock.setStatus(dados.get("status"));
-//        pedidoMock.setCustomerId(UUID.fromString(dados.get("customer_id")));
-//        pedidoMock.setNotes(dados.get("notes"));
-//        pedidoMock.setCreatedAt(OffsetDateTime.parse(dados.get("created_at")));
-//        pedidoMock.setUpdatedAt(OffsetDateTime.parse(dados.get("updated_at")));
-//        pedidoMock.setPaymentId(UUID.fromString(dados.get("payment_id")));
-//        pedidoMock.setQrData(dados.get("qr_data"));
-//
-//        pedidoMock.setProducts(new ArrayList<>()); // vai ser preenchido depois
+        Map<String, String> dados = dataTable.asMaps().getFirst();
+
+        pedidoDTO = new CompleteOrderDTO(
+                UUID.fromString( dados.get("id") ),
+                Integer.valueOf( dados.get("order_number") ),
+                dados.get("status"),
+                UUID.fromString( dados.get("customer_id") ),
+                dados.get("notes"),
+                new BigDecimal( dados.get("original_price") ),
+                OffsetDateTime.parse(dados.get("created_at")).toLocalDateTime(),
+                OffsetDateTime.parse(dados.get("updated_at")).toLocalDateTime(),
+                Optional.empty(),
+                Optional.of(UUID.fromString(dados.get("payment_id"))),
+                Optional.of( dados.get( "payment_qr_data" ) )
+        );
     }
 
     @E("os seguintes produtos:")
     public void osSeguintesProdutos(DataTable dataTable) {
-//        List<Product> produtos = dataTable.asMaps().stream()
-//                .map(map -> new Product(
-//                        UUID.fromString(map.get("id")),
-//                        map.get("name"),
-//                        Integer.parseInt(map.get("quantity")),
-//                        Double.parseDouble(map.get("price")),
-//                        Double.parseDouble(map.get("totalValue"))
-//                ))
-//                .collect(Collectors.toList());
-//
-//        pedidoMock.setProducts(produtos);
-//
-//        // Calcula o preço total automaticamente
-//        double total = produtos.stream()
-//                .mapToDouble(Product::getTotalValue)
-//                .sum();
-//        pedidoMock.setPrice(total);
-//
-//        // Mocka o service
-//        Mockito.when(orderService.findById(eq(pedidoMock.getId())))
-//                .thenReturn(pedidoMock);
+        List<OrderProductItemOutDTO> produtos = dataTable.asMaps().stream()
+                .map(map -> new OrderProductItemOutDTO(
+                        UUID.fromString(map.get("id")),
+                        map.get("name"),
+                        new BigDecimal( map.get("price") ),
+                        Integer.parseInt( map.get("quantity") ),
+                        new BigDecimal( map.get("totalValue") )
+                ))
+                .toList();
+
+        pedidoDTO = new CompleteOrderDTO(
+                pedidoDTO.id(),
+                pedidoDTO.order_number(),
+                pedidoDTO.status(),
+                pedidoDTO.customer_id(),
+                pedidoDTO.notes(),
+                pedidoDTO.price(),
+                pedidoDTO.created_at(),
+                pedidoDTO.updated_at(),
+                Optional.of( produtos ),
+                pedidoDTO.payment_id(),
+                pedidoDTO.payment_qr_data()
+        );
+
+
+
+
+        System.out.println( "payment id : "+pedidoDTO.payment_id() );
+        System.out.println( "payment qr : "+pedidoDTO.payment_qr_data() );
+
+        Mockito.when( orderAdapter.findOrderByID( pedidoDTO.id() ) )
+            .thenReturn( pedidoDTO );
     }
 
     @Dado("que eu possuo os seguintes dados do pedido:")
