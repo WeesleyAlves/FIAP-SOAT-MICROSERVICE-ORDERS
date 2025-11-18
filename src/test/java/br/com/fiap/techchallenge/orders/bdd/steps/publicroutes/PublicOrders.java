@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.orders.steps.publicroutes;
+package br.com.fiap.techchallenge.orders.bdd.steps.publicroutes;
 
 import br.com.fiap.techchallenge.orders.application.dtos.in.PaymentInDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.in.ProductInDTO;
@@ -9,7 +9,7 @@ import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOut
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.PaymentAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.ProductsAdapter;
-import br.com.fiap.techchallenge.orders.steps.common.TestContext;
+import br.com.fiap.techchallenge.orders.bdd.steps.common.TestContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.datatable.DataTable;

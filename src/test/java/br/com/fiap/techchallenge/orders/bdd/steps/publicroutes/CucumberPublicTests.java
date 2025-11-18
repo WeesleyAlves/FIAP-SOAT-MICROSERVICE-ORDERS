@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.orders.steps.publicroutes;
+package br.com.fiap.techchallenge.orders.bdd.steps.publicroutes;
 
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.InventoryAdapter;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
@@ -16,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @SelectClasspathResource("features/OrdersPublicTests.feature")
 @ConfigurationParameter(
     key = Constants.GLUE_PROPERTY_NAME,
-    value = "br.com.fiap.techchallenge.orders.steps.publicroutes,br.com.fiap.techchallenge.orders.steps.common"
+    value = "br.com.fiap.techchallenge.orders.bdd.steps.publicroutes,br.com.fiap.techchallenge.orders.bdd.steps.common"
 )
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty")
 @CucumberContextConfiguration

@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.orders.steps.common;
+package br.com.fiap.techchallenge.orders.bdd.steps.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,10 +1,10 @@
-package br.com.fiap.techchallenge.orders.steps.adminroutes;
+package br.com.fiap.techchallenge.orders.bdd.steps.adminroutes;
 
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
 import br.com.fiap.techchallenge.orders.application.dtos.out.OrderProductItemOutDTO;
 import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
-import br.com.fiap.techchallenge.orders.steps.common.TestContext;
+import br.com.fiap.techchallenge.orders.bdd.steps.common.TestContext;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
 import org.mockito.Mockito;

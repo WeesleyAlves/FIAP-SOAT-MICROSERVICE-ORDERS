@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.orders.steps.common;
+package br.com.fiap.techchallenge.orders.bdd.steps.common;
 
 import br.com.fiap.techchallenge.orders.application.dtos.out.CompleteOrderDTO;
 import io.cucumber.spring.ScenarioScope;
