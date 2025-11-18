@@ -1,13 +1,35 @@
 package br.com.fiap.techchallenge.orders.steps.adminroutes;
 
+import br.com.fiap.techchallenge.orders.application.dtos.out.OrderNumberDTO;
+import br.com.fiap.techchallenge.orders.infrastructure.adapters.OrderAdapter;
 import br.com.fiap.techchallenge.orders.steps.common.TestContext;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.mockito.ArgumentMatchers.any;
 
 public class AdminOrders {
     @Autowired
     private TestContext context;
+
+    @Autowired
+    private OrderAdapter orderAdapter;
+
+    @Dado("que preciso reiniciar a fila de pedidos")
+    public void quePrecisaReiniciarAFilaDePedidos() {
+        Mockito.when(orderAdapter.findTopOrderNumber()).thenReturn(new OrderNumberDTO(
+                3L,
+                3
+        ));
+
+        Mockito.when(orderAdapter.saveOrderNumber( any() ) )
+            .thenReturn( new OrderNumberDTO(
+                1L,
+                0
+            ));
+    }
 
     @Dado("que existe um pedido com o seguinte o ID {string}")
     public void queExisteUmPedidoComOSeguinteID(String id) {

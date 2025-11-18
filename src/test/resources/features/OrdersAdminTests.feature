@@ -5,6 +5,7 @@ Funcionalidade: Testar os endpoints administrativos dos pedidos
 
 
   Cenario: Reiniciar a numeração dos pedidos da fila para 1
+    Dado que preciso reiniciar a fila de pedidos
     Quando eu realizar uma requisicao POST para "/admin/reset-queue-number"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "reset-queue-schema.json"
