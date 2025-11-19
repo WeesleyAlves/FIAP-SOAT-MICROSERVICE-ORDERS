@@ -1,0 +1,28 @@
+services:
+  app:
+    container_name: FIAP-FASTFOOD-MS-ORDERS
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      spring.datasource.url: jdbc:postgresql://postgres_db:5432/${POSTGRES_DB}
+      spring.datasource.username: ${POSTGRES_USER}
+      spring.datasource.password: ${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres_db
+    restart: always
+
+  postgres_db:
+    image: postgres:17.5-alpine3.21
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
