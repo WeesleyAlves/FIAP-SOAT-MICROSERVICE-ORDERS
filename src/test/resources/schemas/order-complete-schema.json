@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "message", "data"],
+  "properties": {
+    "status": {
+      "type": "integer",
+      "enum": [200]
+    },
+    "message": { "type": "string" },
+    "data": {
+      "type": "object",
+      "required": [
+        "id", "order_number", "status", "notes",
+        "price", "created_at", "updated_at", "products",
+        "payment_id", "payment_qr_data", "customer_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string", "format": "uuid",
+          "enum": [ "10ca5645-26e0-4dda-bb3c-11a00009774b" ]
+        },
+        "order_number": {
+          "type": "integer",
+          "enum": [ 2 ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [ "Recebido" ]
+        },
+        "customer_id": { "type": "string", "enum": ["5ad5a64d-98a2-4e2b-bb29-2fa17f40f111"] },
+        "notes": { "type": "string", "enum": [ "Sem cebola" ] },
+        "price": { "type": "number", "enum": [40.30] },
+        "created_at": { "type": "string", "format": "date-time"},
+        "updated_at": { "type": "string", "format": "date-time"},
+        "payment_id": { "type": "string", "format": "uuid" },
+        "payment_qr_data": { "type": "string"},
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "quantity", "price", "totalValue"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "enum": [
+                  "84edb96f-c2e5-425b-a26e-ae583ff19d31",
+                  "ba931dea-9fba-4587-82c7-b724069051f8"
+                ]
+              },
+              "name": { "type": "string", "enum": ["X-Burger", "Refrigerante"] },
+              "quantity": { "type": "integer", "enum": [1, 2, 3, 4] },
+              "price": { "type": "number", "enum": [ 15.90, 8.50 ] },
+              "totalValue": { "type": "number", "enum": [31.80, 8.50] }
+            }
+          }
+        }
+      }
+    }
+  }
+}
