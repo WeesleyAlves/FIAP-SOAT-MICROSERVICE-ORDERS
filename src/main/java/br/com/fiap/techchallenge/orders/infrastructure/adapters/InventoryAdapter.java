@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 public class InventoryAdapter implements InventoryDatasource {
     @Override
     public void updateInventory() {
-//        TODO: fazer isso aqui funcionar
+        //vai ser feito ainda
     }
 }
