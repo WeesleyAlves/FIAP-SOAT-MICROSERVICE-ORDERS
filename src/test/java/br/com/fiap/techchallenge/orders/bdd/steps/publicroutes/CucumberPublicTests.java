@@ -10,7 +10,7 @@ import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @Suite
 @SelectClasspathResource("features/OrdersPublicTests.feature")
@@ -22,15 +22,15 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CucumberPublicTests {
-    @MockitoBean
+    @MockBean
     private OrderAdapter orderAdapter;
 
-    @MockitoBean
+    @MockBean
     private ProductsAdapter productsAdapter;
 
-    @MockitoBean
+    @MockBean
     private PaymentAdapter paymentAdapter;
 
-    @MockitoBean
+    @MockBean
     private InventoryAdapter inventoryAdapter;
 }
