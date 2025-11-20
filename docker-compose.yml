@@ -8,6 +8,7 @@ services:
       spring.datasource.url: jdbc:postgresql://postgres_db:5432/${POSTGRES_DB}
       spring.datasource.username: ${POSTGRES_USER}
       spring.datasource.password: ${POSTGRES_PASSWORD}
+      external.ms.products.getbyid: ${MS_PRODUCTS_GETBYID}
     depends_on:
       - postgres_db
     restart: always
