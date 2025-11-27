@@ -51,7 +51,7 @@ public class ProductsAdapter implements ProductsDatasource {
                 .collect(Collectors.joining(","));
 
         String url = UriComponentsBuilder.fromUriString(productsBaseUrl)
-                .queryParam("productIds", idsString)
+                .queryParam("ids", idsString)
                 .toUriString();
 
         // Define o tipo de retorno esperado (Lista de ProductResponseDTO)
