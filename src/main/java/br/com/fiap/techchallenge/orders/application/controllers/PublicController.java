@@ -14,7 +14,9 @@ import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryData
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
+import br.com.fiap.techchallenge.orders.infrastructure.dtos.UpdateInventoryDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,7 +56,17 @@ public class PublicController {
 
         persistedOrder.setPayment(createdPayment);
 
-        inventoryGateway.updateInventory();
+        List<UpdateInventoryDTO> inventoryToUpdate = new ArrayList<>();
+
+        persistedOrder.getProducts().forEach(
+            p -> inventoryToUpdate.add(
+                new UpdateInventoryDTO(
+                        p.getId(),
+                        p.getQuantity()
+                )
+        ));
+
+        inventoryGateway.updateInventory(inventoryToUpdate);
 
         return OrderPresenter.createCompleteOrderDTO(persistedOrder);
     }
