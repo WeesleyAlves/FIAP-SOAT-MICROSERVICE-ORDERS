@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1/orders")
 public class PublicHandler {
 
     private final PublicController publicController;
@@ -35,7 +35,7 @@ public class PublicHandler {
         );
     }
 
-    @GetMapping("/order/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDTO<CompleteOrderDTO>> getById(@PathVariable UUID id) {
         var response = publicController.getOrderById(id);
 
@@ -57,7 +57,7 @@ public class PublicHandler {
             );
     }
 
-    @PostMapping("/order")
+    @PostMapping
     public ResponseEntity<ApiResponseDTO<CompleteOrderDTO>> createOrder(@RequestBody NewOrderDTO newOrderDTO) {
         var response = publicController.createOrder(newOrderDTO);
 
