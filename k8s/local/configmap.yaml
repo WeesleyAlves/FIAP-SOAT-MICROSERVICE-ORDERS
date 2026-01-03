@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-config
+  namespace: fastfood
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orders:5432/fiap-ms-orders
+
+  EXTERNAL_MS_PRODUCTS_GETBYID: http://products/api/v1/products/find-all-by-ids
+  EXTERNAL_MS_INVENTORY_UPDATE: http://inventory/api/v1/admin/inventory/discount-quantity
+  EXTERNAL_MS_PAYMENT_CREATEPAYMENT: http://payment/api/v1/payments/
+  EXTERNAL_MS_PAYMENT_GETPAYMENT: http://payment/api/v1/payments/order
