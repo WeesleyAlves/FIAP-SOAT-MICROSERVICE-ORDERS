@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryData
 import br.com.fiap.techchallenge.orders.infrastructure.dtos.UpdateInventoryDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
+@Slf4j
 @Service
 public class InventoryAdapter implements InventoryDatasource {
 
@@ -52,16 +54,16 @@ public class InventoryAdapter implements InventoryDatasource {
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding())
                     .thenAccept(response -> {
                         if (response.statusCode() >= 400) {
-                            System.err.println("Erro na requisição PATCH: " + response.statusCode());
+                            log.error("Erro na requisição PATCH: {}", response.statusCode());
                         }
                     })
                     .exceptionally(ex -> {
-                        ex.printStackTrace();
+                        log.error("Falha ao comunicar com o serviço de inventário", ex);
                         return null;
                     });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Falha ao comunicar com o serviço de inventário", e);
         }
     }
 }
