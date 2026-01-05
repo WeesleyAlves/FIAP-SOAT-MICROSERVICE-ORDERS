@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge.orders.application.gateways;
 
 import br.com.fiap.techchallenge.orders.core.entities.OrderPaymentEntity;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
+import br.com.fiap.techchallenge.orders.infrastructure.dtos.CreatePaymentDTO;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -15,11 +16,11 @@ public class PaymentGateway {
         this.paymentDatasource = paymentDatasource;
     }
 
-    public OrderPaymentEntity createPayment() {
-        var result = paymentDatasource.createPayment();
+    public OrderPaymentEntity createPayment(CreatePaymentDTO createPaymentDTO) {
+        var result = paymentDatasource.createPayment(createPaymentDTO);
 
         return  new OrderPaymentEntity(
-            result.uuid(),
+            result.id(),
             result.qrData()
         );
     }
@@ -29,7 +30,7 @@ public class PaymentGateway {
 
         return Optional.of(
             new OrderPaymentEntity(
-                result.uuid(),
+                result.id(),
                 result.qrData()
             )
         );

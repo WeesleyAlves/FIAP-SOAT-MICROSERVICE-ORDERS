@@ -14,8 +14,12 @@ import br.com.fiap.techchallenge.orders.infrastructure.datasources.InventoryData
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.OrderDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.PaymentDatasource;
 import br.com.fiap.techchallenge.orders.infrastructure.datasources.ProductsDatasource;
+import br.com.fiap.techchallenge.orders.infrastructure.dtos.CreatePaymentDTO;
+import br.com.fiap.techchallenge.orders.infrastructure.dtos.UpdateInventoryDTO;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -50,11 +54,26 @@ public class PublicController {
         var orderNumber = orderNumberUseCase.getNextOrderNumber();
 
         var persistedOrder = createOrderUseCase.run(dto, orderNumber);
-        var createdPayment = paymentGateway.createPayment();
+
+        var createdPayment = paymentGateway.createPayment( new CreatePaymentDTO(
+                persistedOrder.getId(),
+                Optional.ofNullable( persistedOrder.getCustomerId() ),
+                persistedOrder.getOriginalPrice()
+        ));
 
         persistedOrder.setPayment(createdPayment);
 
-        inventoryGateway.updateInventory();
+        List<UpdateInventoryDTO> inventoryToUpdate = new ArrayList<>();
+
+        persistedOrder.getProducts().forEach(
+            p -> inventoryToUpdate.add(
+                new UpdateInventoryDTO(
+                        p.getId(),
+                        p.getQuantity()
+                )
+        ));
+
+        inventoryGateway.updateInventory(inventoryToUpdate);
 
         return OrderPresenter.createCompleteOrderDTO(persistedOrder);
     }

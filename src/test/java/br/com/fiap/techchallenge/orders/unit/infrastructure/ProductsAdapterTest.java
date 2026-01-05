@@ -134,7 +134,7 @@ class ProductsAdapterTest {
         );
 
         String capturedUrl = urlCaptor.getValue();
-        assertTrue(capturedUrl.contains("productIds=" + id1 + "," + id2));
+        assertTrue(capturedUrl.contains("ids=" + id1 + "," + id2));
         assertTrue(capturedUrl.startsWith("http://baseurl/api"));
     }
 }
