@@ -20,9 +20,24 @@ jobs:
         with:
           distribution: temurin
           java-version: 23
+          cache: 'maven'
 
       - name: Build with tests
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          EXTERNAL_MS_PRODUCTS_GETBYID: http://mock-url/products
+          EXTERNAL_MS_INVENTORY_UPDATEINVENTORY: http://mock-url/inventory
+          EXTERNAL_MS_PAYMENT_CREATEPAYMENT: http://mock-url/payment
+          EXTERNAL_MS_PAYMENT_GETPAYMENT: http://mock-url/payment/order
         run: mvn clean verify -Dspring.profiles.active=test
 
       - name: SonarCloud Scan
-        run: mvn -B sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B sonar:sonar \
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
