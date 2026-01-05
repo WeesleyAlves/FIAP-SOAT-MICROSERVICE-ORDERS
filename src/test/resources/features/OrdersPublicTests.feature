@@ -15,7 +15,7 @@ Funcionalidade: Testar os endpoints publicos de pedidos
       | 520aab01-9054-4532-8aff-6dc3610d2b6c  | ba931dea-9fba-4587-82c7-b724069051f8  | 2         | 8.50    | 17.00       | Refrigerante  |
       | 4ab889b9-22ac-43f7-aeab-47b211406968  | 84edb96f-c2e5-425b-a26e-ae583ff19d31  | 1         | 15.90   | 15.90       | X-Burger      |
       | 4ab889b9-22ac-43f7-aeab-47b211406968  | ba931dea-9fba-4587-82c7-b724069051f8  | 1         | 8.50    | 8.50        | Refrigerante  |
-    Quando eu realizar um requisicao GET para "/queue"
+    Quando eu realizar um requisicao GET para "/api/v1/orders/queue"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "orders-public-queue-schema.json"
 
@@ -28,7 +28,7 @@ Funcionalidade: Testar os endpoints publicos de pedidos
       | id                                   | name         | quantity | price | totalValue |
       | 84edb96f-c2e5-425b-a26e-ae583ff19d31 | X-Burger     | 2        | 15.90 | 31.80      |
       | ba931dea-9fba-4587-82c7-b724069051f8 | Refrigerante | 1        | 8.50  | 8.50       |
-    Quando eu realizar um requisicao GET para "/order/10ca5645-26e0-4dda-bb3c-11a00009774b"
+    Quando eu realizar um requisicao GET para "/api/v1/orders/10ca5645-26e0-4dda-bb3c-11a00009774b"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "order-complete-schema.json"
 
@@ -55,6 +55,6 @@ Funcionalidade: Testar os endpoints publicos de pedidos
       | id                                   | name         | price |
       | 84edb96f-c2e5-425b-a26e-ae583ff19d31 | X-Burger     | 15.90 |
       | ba931dea-9fba-4587-82c7-b724069051f8 | Refrigerante | 8.50  |
-    Quando eu realizar uma requisicao POST para "/order"
+    Quando eu realizar uma requisicao POST para "/api/v1/orders"
     Entao deve retornar status 201
     E deve retornar um JSON com o schema "order-created-schema.json"

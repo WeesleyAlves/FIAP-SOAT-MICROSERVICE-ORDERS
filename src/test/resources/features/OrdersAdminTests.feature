@@ -6,7 +6,7 @@ Funcionalidade: Testar os endpoints administrativos dos pedidos
 
   Cenario: Reiniciar a numeração dos pedidos da fila para 1
     Dado que preciso reiniciar a fila de pedidos
-    Quando eu realizar uma requisicao POST para "/admin/reset-queue-number"
+    Quando eu realizar uma requisicao POST para "/api/v1/admin/orders/reset-queue-number"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "reset-queue-schema.json"
 
@@ -20,7 +20,7 @@ Funcionalidade: Testar os endpoints administrativos dos pedidos
           "status_id": 2
       }
     """
-    Quando eu realizar uma requisicao PATCH para "/admin/order/status"
+    Quando eu realizar uma requisicao PATCH para "/api/v1/admin/orders/status"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "order-admin-schema.json"
 
@@ -36,6 +36,6 @@ Funcionalidade: Testar os endpoints administrativos dos pedidos
       | ef891941-2291-4c46-9c6c-eaa949e090b5  | dd061d8e-4fbe-47da-a87f-87c90304b0ca  | 2         | 8.50    | 17.00       | Refrigerante  |
       | 1f6f1a3f-f2fb-42da-938f-776f9cf7c24f  | ffa98bf1-2eae-46bb-b7d5-216f3c2b8ae8  | 1         | 15.90   | 15.90       | X-Burger      |
       | 1f6f1a3f-f2fb-42da-938f-776f9cf7c24f  | dd061d8e-4fbe-47da-a87f-87c90304b0ca  | 1         | 8.50    | 8.50        | Refrigerante  |
-    Quando eu realizar um requisicao GET para "/admin/orders"
+    Quando eu realizar um requisicao GET para "/api/v1/admin/orders"
     Entao deve retornar status 200
     E deve retornar um JSON com o schema "orders-admin-list-schema.json"
