@@ -9,7 +9,7 @@ services:
       spring.datasource.username: ${POSTGRES_USER}
       spring.datasource.password: ${POSTGRES_PASSWORD}
       external.ms.products.getbyid: ${MS_PRODUCTS_GETBYID}
-      external.ms.inventory.updateInventory: ${MS_INVENTORY_UPDATE}
+      external.ms.inventory.updateInventory: ${MS_INVENTORY_UPDATEINVENTORY}
       external.ms.payment.createPayment: ${MS_PAYMENT_CREATE}
       external.ms.payment.getPayment: ${MS_PAYMENT_GETBYID}
     depends_on:
