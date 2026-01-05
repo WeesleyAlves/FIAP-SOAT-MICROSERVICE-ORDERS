@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/v1/admin/orders")
 public class AdminHandler {
     private final AdminController adminController;
 
@@ -31,7 +31,7 @@ public class AdminHandler {
             );
     }
 
-    @PatchMapping("/order/status")
+    @PatchMapping("/status")
     public ResponseEntity<ApiResponseDTO<CompleteOrderDTO>> updateOrderStatus(@RequestBody PathOrderDTO dto) {
         var result = adminController.updateStatus( dto );
 
@@ -42,7 +42,7 @@ public class AdminHandler {
             );
     }
 
-    @GetMapping("/orders")
+    @GetMapping
     public ResponseEntity<ApiResponseDTO<List<QueueOrderDTO>>> getAdminOrdersList() {
         var result = adminController.getAllOrders();
 

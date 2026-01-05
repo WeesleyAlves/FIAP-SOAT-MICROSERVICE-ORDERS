@@ -154,7 +154,7 @@ public class PublicOrders {
                 )
         );
 
-        Mockito.when( paymentAdapter.createPayment() )
+        Mockito.when( paymentAdapter.createPayment( any() ) )
                 .thenReturn( new PaymentInDTO(
                     paymentId,
                     qrData
