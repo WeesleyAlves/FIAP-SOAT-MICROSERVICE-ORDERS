@@ -19,16 +19,14 @@ public class InventoryAdapter implements InventoryDatasource {
     @Value("${external.ms.inventory.updateInventory}")
     private String inventoryUpdateUrl;
 
-    private final HttpClient httpClient; // Removido static final
+    private final HttpClient httpClient;
     private final ObjectWriter jsonWriter;
 
-    // Construtor para o Spring e para os Testes
     public InventoryAdapter() {
         this.httpClient = HttpClient.newHttpClient();
         this.jsonWriter = new ObjectMapper().writer();
     }
 
-    // Construtor opcional para testes (ou use o de cima com Mockito)
     public InventoryAdapter(HttpClient httpClient) {
         this.httpClient = httpClient;
         this.jsonWriter = new ObjectMapper().writer();
@@ -47,11 +45,16 @@ public class InventoryAdapter implements InventoryDatasource {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(inventoryUpdateUrl))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(bodyJson))
+                    // Alteração principal: .method("PATCH", ...) em vez de .POST()
+                    .method("PATCH", HttpRequest.BodyPublishers.ofString(bodyJson))
                     .build();
 
-            // Usando a instância injetada
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding())
+                    .thenAccept(response -> {
+                        if (response.statusCode() >= 400) {
+                            System.err.println("Erro na requisição PATCH: " + response.statusCode());
+                        }
+                    })
                     .exceptionally(ex -> {
                         ex.printStackTrace();
                         return null;

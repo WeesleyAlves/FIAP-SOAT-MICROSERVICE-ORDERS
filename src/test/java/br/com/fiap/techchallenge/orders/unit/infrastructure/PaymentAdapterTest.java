@@ -82,17 +82,14 @@ class PaymentAdapterTest {
 
         when(restTemplate.getForEntity(anyString(), any())).thenReturn((ResponseEntity) response);
 
-        // Act
         PaymentInDTO result = adapter.getPaymentByOrderId(orderId);
 
-        // Assert
         assertNotNull(result);
         assertEquals(paymentId, result.id());
 
         ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
         verify(restTemplate).getForEntity(urlCaptor.capture(), any());
 
-        // Verifica se o ID foi concatenado corretamente na URL via pathSegment
         assertTrue(urlCaptor.getValue().contains(baseUrl + "/" + orderId));
     }
 
@@ -119,15 +116,11 @@ class PaymentAdapterTest {
         ArgumentCaptor<Object> bodyCaptor = ArgumentCaptor.forClass(Object.class);
         verify(restTemplate).postForEntity(anyString(), bodyCaptor.capture(), any());
 
-        // O corpo capturado deve ser o record interno PaymentRequestDTO
         Object capturedBody = bodyCaptor.getValue();
         assertEquals(orderId.toString(), ReflectionTestUtils.getField(capturedBody, "orderId"));
         assertEquals(BigDecimal.valueOf(50.0), ReflectionTestUtils.getField(capturedBody, "amount"));
     }
 
-    /**
-     * Helper para criar instância do record privado PaymentResponseDTO via Reflexão
-     */
     private Object createPaymentResponseInstance(UUID id, String qrData) throws Exception {
         Class<?> recordClass = Class.forName(
                 "br.com.fiap.techchallenge.orders.infrastructure.adapters.PaymentAdapter$PaymentResponseDTO"
