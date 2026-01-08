@@ -11,12 +11,17 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Tag(
+        name = "Zona Administrativa de Pedidos",
+        description = "Rotas administrativas para os pedidos"
+)
 @RequestMapping("/api/v1/admin/orders")
 public class AdminHandler {
     private final AdminController adminController;
