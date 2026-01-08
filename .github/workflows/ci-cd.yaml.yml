@@ -90,8 +90,8 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/namespace.yaml
-          kubectl apply -f k8s/secret.yaml
-          kubectl apply -f k8s/configmap.yaml
-          kubectl apply -f k8s/orders-deployment.yaml
-          kubectl apply -f k8s/orders-service.yaml
+          kubectl apply -f k8s/aws/namespace.yaml
+          kubectl apply -f k8s/aws/secret.yaml
+          kubectl apply -f k8s/aws/configmap.yaml
+          kubectl apply -f k8s/aws/orders-deployment.yaml
+          kubectl apply -f k8s/aws/orders-service.yaml
