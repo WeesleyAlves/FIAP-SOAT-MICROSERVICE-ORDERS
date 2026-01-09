@@ -11,6 +11,7 @@ import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 @Suite
 @SelectClasspathResource("features/OrdersPublicTests.feature")
@@ -21,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty")
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class CucumberPublicTests {
     @MockBean
     private OrderAdapter orderAdapter;
