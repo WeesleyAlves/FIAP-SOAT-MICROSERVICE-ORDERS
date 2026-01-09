@@ -1,8 +1,8 @@
 # 🍔 FIAP FastFood - Microserviço de Pedidos (Orders)
 
 [![CI/CD](https://github.com/WeesleyAlves/FIAP-SOAT-MICROSERVICE-ORDERS/actions/workflows/ci-cd.yaml.yml/badge.svg)](https://github.com/your-repo/FIAP-SOAT-MS-ORDERS/actions)
-[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=alert_status)](https://sonarcloud.io/dashboard?id=your-project)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=coverage)](https://sonarcloud.io/dashboard?id=your-project)
+[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=alert_status)](https://sonarcloud.io/dashboard?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=coverage)](https://sonarcloud.io/dashboard?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS)
 
 ## 📋 Sobre o Projeto
 
@@ -72,6 +72,12 @@ O projeto segue os princípios da **Clean Architecture**, com clara separação 
     ├── entities/         # Entidades JPA
     └── repositories/     # Repositórios Spring Data
 ```
+
+## Cobertura + Sonar
+
+É possível verificar os dados do sonar em https://sonarcloud.io/project/overview?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS ;
+
+<img width="1633" height="977" alt="coverage-ms-orders" src="https://github.com/user-attachments/assets/fe28baac-2318-474c-be13-1a054ca7c5a1" />
 
 ## 🚀 Como Executar Localmente
 
