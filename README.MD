@@ -316,6 +316,3 @@ Este projeto foi desenvolvido como parte do Tech Challenge da FIAP.
 - Pedro Morgado — RM364209
 - Wesley Alves — RM364342
 
----
-
-**Última atualização**: Janeiro 2026
