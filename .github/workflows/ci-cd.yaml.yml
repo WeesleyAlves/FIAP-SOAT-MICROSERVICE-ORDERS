@@ -88,9 +88,20 @@ jobs:
             --name ${EKS_CLUSTER_NAME}
 
       - name: Deploy to Kubernetes
+        env:
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
         run: |
           kubectl apply -f k8s/aws/namespace.yaml
-          kubectl apply -f k8s/aws/secret.yaml
+          
+          kubectl create secret generic orders-secret \
+            --namespace fastfood \
+            --from-literal=SPRING_DATASOURCE_USERNAME="$SPRING_DATASOURCE_USERNAME" \
+            --from-literal=SPRING_DATASOURCE_PASSWORD="$SPRING_DATASOURCE_PASSWORD" \
+            --from-literal=SPRING_DATASOURCE_URL="$SPRING_DATASOURCE_URL" \
+            --dry-run=client -o yaml | kubectl apply -f -
+          
           kubectl apply -f k8s/aws/configmap.yaml
           kubectl apply -f k8s/aws/orders-deployment.yaml
           kubectl apply -f k8s/aws/orders-service.yaml
