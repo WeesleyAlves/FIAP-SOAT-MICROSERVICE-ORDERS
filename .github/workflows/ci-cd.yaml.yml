@@ -1,0 +1,103 @@
+name: CI/CD Orders MS
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: fiap-fastfood-ms-orders
+  EKS_CLUSTER_NAME: fiap-fastfood-eks
+
+jobs:
+  sonar:
+    name: Build & SonarCloud
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 23
+          cache: maven
+
+      - name: Build with tests
+        run: mvn clean verify -Dspring.profiles.active=test
+
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.0.0.4389:sonar \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    name: Build & Deploy to EKS
+    runs-on: ubuntu-latest
+    needs: sonar
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag and push image
+        run: |
+          IMAGE_TAG=${GITHUB_SHA}
+          ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+          docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} .
+          docker tag ${ECR_REPOSITORY}:${IMAGE_TAG} ${ECR_URI}/${ECR_REPOSITORY}:latest
+          docker tag ${ECR_REPOSITORY}:${IMAGE_TAG} ${ECR_URI}/${ECR_REPOSITORY}:${IMAGE_TAG}
+
+          docker push ${ECR_URI}/${ECR_REPOSITORY}:latest
+          docker push ${ECR_URI}/${ECR_REPOSITORY}:${IMAGE_TAG}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region ${AWS_REGION} \
+            --name ${EKS_CLUSTER_NAME}
+
+      - name: Deploy to Kubernetes
+        env:
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+        run: |
+          kubectl apply -f k8s/aws/namespace.yaml
+          
+          kubectl create secret generic orders-secret \
+            --namespace fastfood \
+            --from-literal=SPRING_DATASOURCE_USERNAME="$SPRING_DATASOURCE_USERNAME" \
+            --from-literal=SPRING_DATASOURCE_PASSWORD="$SPRING_DATASOURCE_PASSWORD" \
+            --from-literal=SPRING_DATASOURCE_URL="$SPRING_DATASOURCE_URL" \
+            --dry-run=client -o yaml | kubectl apply -f -
+          
+          kubectl apply -f k8s/aws/configmap.yaml
+          kubectl apply -f k8s/aws/orders-deployment.yaml
+          kubectl apply -f k8s/aws/orders-service.yaml
+
+      - name: Force Rollout
+        run: |
+            kubectl rollout restart deployment catalog -n fastfood
