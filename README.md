@@ -73,12 +73,6 @@ O projeto segue os princípios da **Clean Architecture**, com clara separação 
     └── repositories/     # Repositórios Spring Data
 ```
 
-## Cobertura + Sonar
-
-É possível verificar os dados do sonar em https://sonarcloud.io/project/overview?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS ;
-
-<img width="1633" height="977" alt="coverage-ms-orders" src="https://github.com/user-attachments/assets/fe28baac-2318-474c-be13-1a054ca7c5a1" />
-
 ## 🚀 Como Executar Localmente
 
 ### Pré-requisitos
@@ -262,6 +256,8 @@ sonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
 Acesse o dashboard do SonarCloud em:
 - https://sonarcloud.io/dashboard?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS
+
+<img width="1633" height="977" alt="coverage-ms-orders" src="https://github.com/user-attachments/assets/fe28baac-2318-474c-be13-1a054ca7c5a1" />
 
 ## 🐳 Deploy com Kubernetes
 
