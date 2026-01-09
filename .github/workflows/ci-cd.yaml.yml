@@ -100,4 +100,4 @@ jobs:
 
       - name: Force Rollout
         run: |
-            kubectl rollout restart deployment catalog -n fastfood
+            kubectl rollout restart deployment orders -n fastfood
