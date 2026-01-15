@@ -8,6 +8,8 @@
 
 Microserviço responsável pelo gerenciamento de pedidos do sistema FastFood da FIAP Tech Challenge. Este serviço faz parte de uma arquitetura de microserviços e gerencia todo o ciclo de vida dos pedidos, desde a criação até a finalização, integrando-se com outros microserviços (Produtos, Inventário e Pagamento).
 
+Este microserviço faz parte do Projeto FIAP Fastfood, [disponível aqui](https://github.com/WeesleyAlves/FIAP-SOAT-FASTFOOD-INFRA-MS).
+
 ### 🎯 Funcionalidades
 
 - **Gestão de Pedidos**: Criação, consulta e atualização de pedidos
@@ -302,9 +304,8 @@ kubectl apply -f k8s/aws/orders-service.yaml
 
 Este microserviço se integra com:
 
-- **MS-Products**: Consulta de informações de produtos
-- **MS-Inventory**: Atualização de estoque
-- **MS-Payment**: Criação e consulta de pagamentos
+- [**MS-Catalog**](https://github.com/lucasfelintonp/FIAP-SOAT-MS-CATALOG): Consulta de informações de produtos e atualização de estoque
+- [**MS-Payment**](https://github.com/DiegodeSalles/FIAP-SOAT-PAYMENT-MICROSERVICE): Criação e consulta de pagamentos
 
 ## 📝 Licença
 
