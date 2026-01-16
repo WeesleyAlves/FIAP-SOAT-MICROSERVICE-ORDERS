@@ -1,12 +1,14 @@
 # 🍔 FIAP FastFood - Microserviço de Pedidos (Orders)
 
 [![CI/CD](https://github.com/WeesleyAlves/FIAP-SOAT-MICROSERVICE-ORDERS/actions/workflows/ci-cd.yaml.yml/badge.svg)](https://github.com/your-repo/FIAP-SOAT-MS-ORDERS/actions)
-[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=alert_status)](https://sonarcloud.io/dashboard?id=your-project)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=coverage)](https://sonarcloud.io/dashboard?id=your-project)
+[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=alert_status)](https://sonarcloud.io/dashboard?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS&metric=coverage)](https://sonarcloud.io/dashboard?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS)
 
 ## 📋 Sobre o Projeto
 
 Microserviço responsável pelo gerenciamento de pedidos do sistema FastFood da FIAP Tech Challenge. Este serviço faz parte de uma arquitetura de microserviços e gerencia todo o ciclo de vida dos pedidos, desde a criação até a finalização, integrando-se com outros microserviços (Produtos, Inventário e Pagamento).
+
+Este microserviço faz parte do Projeto FIAP Fastfood, [disponível aqui](https://github.com/WeesleyAlves/FIAP-SOAT-FASTFOOD-INFRA-MS).
 
 ### 🎯 Funcionalidades
 
@@ -257,6 +259,8 @@ sonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 Acesse o dashboard do SonarCloud em:
 - https://sonarcloud.io/dashboard?id=WeesleyAlves_FIAP-SOAT-MICROSERVICE-ORDERS
 
+<img width="1633" height="977" alt="coverage-ms-orders" src="https://github.com/user-attachments/assets/fe28baac-2318-474c-be13-1a054ca7c5a1" />
+
 ## 🐳 Deploy com Kubernetes
 
 ### Ambiente Local (Minikube/Kind)
@@ -300,9 +304,8 @@ kubectl apply -f k8s/aws/orders-service.yaml
 
 Este microserviço se integra com:
 
-- **MS-Products**: Consulta de informações de produtos
-- **MS-Inventory**: Atualização de estoque
-- **MS-Payment**: Criação e consulta de pagamentos
+- [**MS-Catalog**](https://github.com/lucasfelintonp/FIAP-SOAT-MS-CATALOG): Consulta de informações de produtos e atualização de estoque
+- [**MS-Payment**](https://github.com/DiegodeSalles/FIAP-SOAT-PAYMENT-MICROSERVICE): Criação e consulta de pagamentos
 
 ## 📝 Licença
 
